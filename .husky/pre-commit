@@ -1,0 +1,28 @@
+# yarn add -D husky
+# yarn husky install
+# yarn add lint-staged -D
+# yarn add @commitlint/config-conventional -D
+
+# cấp quyền 
+# ls -la .husky/pre-commit
+# chmod +x .husky/pre-commit
+
+# Chạy lint-staged
+echo "✅ Running lint-staged..."
+yarn lint-staged
+
+if [ $? -ne 0 ]; then
+  echo "❌ Lint-staged failed. Aborting commit."
+  exit 1
+fi
+
+# Build dự án
+echo "🔨 Building project..."
+yarn build
+
+if [ $? -ne 0 ]; then
+  echo "❌ Build failed. Aborting commit."
+  exit 1
+fi
+
+echo "✅ All checks passed. Proceeding with commit."
