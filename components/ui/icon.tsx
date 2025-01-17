@@ -1,6 +1,45 @@
-import { Loader2 } from 'lucide-react'
+import {
+  Loader2,
+  Mail,
+  CheckCircle,
+  Lock,
+  MailCheck,
+  Home,
+  Bell,
+  Twitter,
+  Hash,
+  Bookmark,
+  List,
+  User,
+  MoreHorizontal,
+  Image,
+  Smile,
+  Calendar,
+  MessageCircle,
+  Repeat,
+  Heart,
+  Share
+} from 'lucide-react'
 
-  export const Icons = {
-    spinner: Loader2,
-  }
-
+export const Icons = {
+  spinner: Loader2,
+  mail: Mail,
+  checkCircle: CheckCircle,
+  lock: Lock,
+  mailCheck: MailCheck,
+  home: Home,
+  bell: Bell,
+  twitter: Twitter,
+  hash: Hash,
+  bookmark: Bookmark,
+  list: List,
+  user: User,
+  moreHorizontal: MoreHorizontal,
+  image: Image,
+  smile: Smile,
+  calendar: Calendar,
+  messageCircle: MessageCircle,
+  repeat: Repeat,
+  heart: Heart,
+  share: Share
+}
