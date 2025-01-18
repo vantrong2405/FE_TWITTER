@@ -1,8 +1,8 @@
-import Form from './(form)/form'
+import Form from './form'
 export default function page() {
   return (
     <div>
-      <Form/>
+      <Form />
     </div>
-  ) 
+  )
 }
