@@ -13,7 +13,7 @@ export default function HomePage() {
           <TweetComposer />
           <TweetList />
         </main>
-        <aside className='hidden xl:block w-1/4'>{/* Trending topics and who to follow would go here */}</aside>
+        <aside className='hidden xl:block w-1/4'></aside>
       </div>
     </div>
   )

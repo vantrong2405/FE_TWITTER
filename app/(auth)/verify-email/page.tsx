@@ -21,7 +21,7 @@ export default function VerifyEmailPage() {
           <div className='text-center space-y-4'>
             <Icons.checkCircle className='h-12 w-12 text-green-500 mx-auto' />
             <p className='text-lg font-semibold'>Email Verified Successfully!</p>
-            <Button className='w-full' onClick={() => (window.location.href = '/login&register')}>
+            <Button className='w-full' onClick={() => (window.location.href = '/')}>
               Continue to Dashboard
             </Button>
           </div>
