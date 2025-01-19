@@ -16,8 +16,8 @@ import { pathUrl } from '@/app/constant/path'
 
 class Http {
   instance: AxiosInstance
-  private accessToken: string
-  private refreshToken: string
+  private accessToken: string | null
+  private refreshToken: string | null
   constructor() {
     this.accessToken = getAccessTokenFromLS()
     this.refreshToken = getRefreshTokenFromLS()
@@ -47,8 +47,10 @@ class Http {
         if (url === pathUrl.login_register) {
           this.accessToken = data.data.access_token
           this.refreshToken = data.data.refresh_token
-          setAccessTokenToLS(this.accessToken)
-          setRefreshTokenToLS(this.refreshToken)
+          if (this.accessToken && this.refreshToken) {
+            setAccessTokenToLS(this.accessToken)
+            setRefreshTokenToLS(this.refreshToken)
+          }
           setProfileToLS(data.data.user)
         } else if (url === pathUrl.logout) {
           this.accessToken = ''
