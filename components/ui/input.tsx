@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { InputHTMLAttributes } from 'react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/axios.validate'
 import type { UseFormRegister, RegisterOptions } from 'react-hook-form'
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {

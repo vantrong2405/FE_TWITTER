@@ -1,8 +1,18 @@
 import { TypeSchema } from './rules'
 
-export type TypeFormDataRegister = Pick<
-  TypeSchema,
-  'email' | 'password' | 'confirm_password' | 'name' | 'date_of_birth'
->
+export type TypeFormDataRegister = Omit<TypeSchema, 'forgot_password_token'>
 
-export type TypeFormDataLogin = Pick<TypeSchema, 'email' | 'password'>
+export interface TypeFormDataLogin {
+  email: string
+  password: string
+}
+
+export interface TypeFormDataForgot {
+  email: string
+}
+
+export interface TypeFormResetPassword {
+  password: string
+  confirm_password: string
+  forgot_password_token?: string
+}

@@ -11,10 +11,14 @@ import 'react-toastify/dist/ReactToastify.css'
 import { loginSchema } from '@/app/schemas/auth.schema'
 import { TypeFormDataLogin } from '@/app/schemas/type.schema'
 import { handleError, setAccessTokenToLS, setRefreshTokenToLS } from '@/app/utils/utils'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { redirect } from 'next/navigation'
+import Link from 'next/link'
+import { pathUrl } from '@/app/constant/path'
+import { useEffect, useState } from 'react'
+import { set } from 'date-fns'
 
-export function SignInForm() {
-  const router = useRouter()
+export function FormSignIn() {
+  const [isLogin, setIsLogin] = useState(false)
   const {
     register,
     handleSubmit,
@@ -34,12 +38,19 @@ export function SignInForm() {
         const { access_token, refresh_token } = data.data.result
         setAccessTokenToLS(access_token)
         setRefreshTokenToLS(refresh_token)
-        router.push('/')
+        console.log('123')
+        setIsLogin(true)
       },
       onError: (error) => handleError(error, setError, {} as TypeFormDataLogin)
     })
   })
 
+  useEffect(() => {
+    if (isLogin) {
+      setIsLogin(false)
+      redirect(pathUrl.home)
+    }
+  }, [isLogin])
   return (
     <form onSubmit={onSubmit} className='space-y-4'>
       <div className='space-y-2'>
@@ -64,12 +75,17 @@ export function SignInForm() {
           errorMessage={errors.password?.message}
         />
       </div>
-      <Button type='submit' className='w-full'>
+      <Button
+        type='submit'
+        className='w-full'
+        isLoading={loginAccountMutation.isPending}
+        disabled={loginAccountMutation.isPending}
+      >
         Sign In
       </Button>
-      <a href='/forgot-password' className='text-end font-normal hover:underline block'>
+      <Link href={pathUrl.login_register} className='text-end font-normal hover:underline block'>
         Forgot password?
-      </a>
+      </Link>
     </form>
   )
 }

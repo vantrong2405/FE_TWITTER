@@ -1,6 +1,4 @@
-import type { RegisterOptions } from 'react-hook-form'
 import * as yup from 'yup'
-type Rules = { [key in 'email' | 'password' | 'confirm_password']?: RegisterOptions }
 
 export const schema = yup.object({
   email: yup

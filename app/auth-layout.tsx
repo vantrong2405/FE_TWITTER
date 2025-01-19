@@ -1,26 +1,22 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
+import { redirect } from 'next/navigation'
 import { getAccessTokenFromLS } from './utils/utils'
+import { pathUrl } from './constant/path'
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
-  const router = useRouter()
+  const pathname = usePathname()
 
   useEffect(() => {
     const token = getAccessTokenFromLS()
-    const currentPath = window.location.pathname
-
-    if (!token) {
-      if (!currentPath.startsWith('/login&register')) {
-        router.push('/login&register')
-      }
-    } else {
-      if (currentPath.startsWith('/login&register')) {
-        router.push('/')
-      }
+    if (!token && !pathname.startsWith('/auth/') && pathname !== pathUrl.login_register) {
+      redirect(pathUrl.login_register)
+    } else if (token && pathname === pathUrl.login_register) {
+      redirect(pathUrl.home)
     }
-  }, [router])
+  }, [pathname])
 
   return <>{children}</>
 }
