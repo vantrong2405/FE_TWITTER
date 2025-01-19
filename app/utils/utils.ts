@@ -2,6 +2,8 @@ import { User } from '../type/user.type'
 import { Path, UseFormSetError } from 'react-hook-form'
 import axios from 'axios'
 import { HttpStatusCode } from '../constant/httpStatusCode.enum'
+import clsx, { ClassValue } from 'clsx'
+import { twMerge } from 'tailwind-merge'
 
 export const isClient = typeof window !== 'undefined'
 
@@ -50,4 +52,8 @@ export const handleError = <T extends Record<string, any>>(
       })
     }
   }
+}
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
 }

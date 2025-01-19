@@ -17,7 +17,3 @@ export function isAxiosUnprocessableEntityError<UnprocessableEntityError>(
 ): error is AxiosError<UnprocessableEntityError> {
   return isAxiosError(error) && error.response?.status === HttpStatusCode.UnprocessableEntity
 }
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}

@@ -1,6 +1,5 @@
+import { cn } from '@/app/utils/utils'
 import * as React from 'react'
-
-import { cn } from '@/lib/axios.validate'
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, React.ComponentProps<'textarea'>>(
   ({ className, ...props }, ref) => {
