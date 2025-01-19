@@ -32,7 +32,8 @@ class Http {
     })
     this.instance.interceptors.request.use(
       (config) => {
-        config.headers.authorization = this.accessToken
+        const token = getAccessTokenFromLS()
+        config.headers.authorization = `Bearer ${token}`
         return config
       },
       function (error) {
@@ -57,7 +58,9 @@ class Http {
           this.refreshToken = ''
           clearLS()
         }
-        toast.success(data.message)
+        if (data.message) {
+          toast.success(data.message)
+        }
         return response
       },
       async (error) => {

@@ -1,6 +1,6 @@
 import React from 'react'
-import HomePage from './dashboard/page'
+import FormDashBoard from './form'
 
 export default function page() {
-  return <HomePage />
+  return <FormDashBoard />
 }

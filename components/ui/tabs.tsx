@@ -2,8 +2,7 @@
 
 import * as React from 'react'
 import * as TabsPrimitive from '@radix-ui/react-tabs'
-
-import { cn } from '@/lib/axios.validate'
+import { cn } from '@/app/utils/utils'
 
 const Tabs = TabsPrimitive.Root
 
