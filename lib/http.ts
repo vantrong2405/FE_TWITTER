@@ -10,9 +10,9 @@ import {
   setRefreshTokenToLS
 } from '../app/utils/utils'
 import { HttpStatusCode } from '../app/constant/httpStatusCode.enum'
-import { path } from '../app/constant/path'
 import { RefreshTokenResponse } from '../app/type/auth.type'
-import { isAxiosExpiredTokenError } from './utils'
+import { isAxiosExpiredTokenError } from './axios.validate'
+import { pathUrl } from '@/app/constant/path'
 
 class Http {
   instance: AxiosInstance
@@ -44,13 +44,13 @@ class Http {
       (response) => {
         const { url } = response.config
         const data = response.data
-        if (url === path.login_register) {
+        if (url === pathUrl.login_register) {
           this.accessToken = data.data.access_token
           this.refreshToken = data.data.refresh_token
           setAccessTokenToLS(this.accessToken)
           setRefreshTokenToLS(this.refreshToken)
           setProfileToLS(data.data.user)
-        } else if (url === path.logout) {
+        } else if (url === pathUrl.logout) {
           this.accessToken = ''
           this.refreshToken = ''
           clearLS()

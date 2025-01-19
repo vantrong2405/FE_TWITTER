@@ -6,20 +6,40 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import Link from 'next/link'
 import { Icons } from '@/components/ui/icon'
+import { useForm } from 'react-hook-form'
+import { TypeFormDataForgot } from '@/app/schemas/type.schema'
+import authApi from '@/app/apis/auth.api'
+import { useMutation } from '@tanstack/react-query'
+import { forgotSchema } from '@/app/schemas/auth.schema'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { handleError } from '@/app/utils/utils'
+import { pathUrl } from '@/app/constant/path'
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors }
+  } = useForm<TypeFormDataForgot>({
+    resolver: yupResolver(forgotSchema)
+  })
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    // Simulate API call for password reset request
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    setIsLoading(false)
-    setIsSubmitted(true)
-  }
+  const forgotAccountMutation = useMutation({
+    mutationFn: (body: TypeFormDataForgot) => authApi.forgotAccount(body)
+  })
+
+  const onSubmit = handleSubmit((data) => {
+    forgotAccountMutation.mutate(data, {
+      onSuccess: (data) => {
+        setIsSubmitted(true)
+      },
+      onError: (error) => handleError(error, setError, {} as TypeFormDataForgot)
+    })
+  })
 
   return (
     <div className='min-h-screen bg-gradient-to-b from-blue-100 to-white dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4'>
@@ -35,16 +55,15 @@ export default function ForgotPasswordPage() {
         </CardHeader>
         <CardContent>
           {!isSubmitted ? (
-            <form onSubmit={handleSubmit} className='space-y-4'>
+            <form onSubmit={onSubmit} className='space-y-4'>
               <div className='space-y-2'>
                 <Input
-                  id='email'
                   type='email'
-                  placeholder='Enter your email'
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className='w-full'
-                  required
+                  className='mt-8'
+                  placeholder='enter your email'
+                  register={register}
+                  name='email'
+                  errorMessage={errors.email?.message}
                 />
               </div>
               <Button type='submit' className='w-full' disabled={isLoading}>
@@ -64,7 +83,7 @@ export default function ForgotPasswordPage() {
           )}
         </CardContent>
         <CardFooter className='flex justify-center'>
-          <Link href='/login&register' className='text-sm text-blue-500 hover:underline'>
+          <Link href={pathUrl.login_register} className='text-sm text-blue-500 hover:underline'>
             Back to Login
           </Link>
         </CardFooter>

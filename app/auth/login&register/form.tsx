@@ -1,8 +1,8 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { SignInForm } from './sign-in-form'
-import { SignUpForm } from './sign-up-form'
+import { FormSignIn } from './form-sign-in'
+import { FormSignUp } from './form-sign-up'
 
 export default function FormAuth() {
   return (
@@ -43,10 +43,10 @@ export default function FormAuth() {
               </TabsTrigger>
             </TabsList>
             <TabsContent value='login'>
-              <SignInForm />
+              <FormSignIn />
             </TabsContent>
             <TabsContent value='register'>
-              <SignUpForm />
+              <FormSignUp />
             </TabsContent>
           </Tabs>
         </CardContent>

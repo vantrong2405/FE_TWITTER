@@ -11,8 +11,10 @@ import { DatePicker } from '@/components/ui/date-picker'
 import { registerSchema } from '@/app/schemas/auth.schema'
 import { TypeFormDataRegister } from '@/app/schemas/type.schema'
 import { handleError } from '@/app/utils/utils'
+import Link from 'next/link'
+import { pathUrl } from '@/app/constant/path'
 
-export function SignUpForm() {
+export function FormSignUp() {
   const {
     register,
     handleSubmit,
@@ -23,12 +25,12 @@ export function SignUpForm() {
     resolver: yupResolver(registerSchema)
   })
 
-  const logoutAccountMutation = useMutation({
+  const registerAccountMutation = useMutation({
     mutationFn: (body: TypeFormDataRegister) => authApi.registerAccount(body)
   })
 
   const onSubmit = handleSubmit((data) => {
-    logoutAccountMutation.mutate(data, {
+    registerAccountMutation.mutate(data, {
       onSuccess: () => {},
       onError: (error) => handleError(error, setError, {} as TypeFormDataRegister)
     })
@@ -89,12 +91,17 @@ export function SignUpForm() {
           className='mt-8'
         />
       </div>
-      <Button type='submit' className='w-full'>
+      <Button
+        type='submit'
+        className='w-full'
+        isLoading={registerAccountMutation.isPending}
+        disabled={registerAccountMutation.isPending}
+      >
         Sign up
       </Button>
-      <a href='/forgot-password' className='text-end font-normal hover:underline block'>
+      <Link href={pathUrl.forgot_password} className='text-end font-normal hover:underline block'>
         Forgot password?
-      </a>
+      </Link>
     </form>
   )
 }
