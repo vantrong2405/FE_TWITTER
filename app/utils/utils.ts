@@ -3,27 +3,35 @@ import { Path, UseFormSetError } from 'react-hook-form'
 import axios from 'axios'
 import { HttpStatusCode } from '../constant/httpStatusCode.enum'
 
-export const setAccessTokenToLS = (access_token: string) => {
-  localStorage.setItem('access_token', access_token)
+export const isClient = typeof window !== 'undefined'
+
+export const getAccessTokenFromLS = () => (isClient ? localStorage.getItem('access_token') : null)
+export const getRefreshTokenFromLS = () => (isClient ? localStorage.getItem('refresh_token') : null)
+export const getProfileFromLS = (): User | null => {
+  if (!isClient) return null
+
+  const userInfo = localStorage.getItem('userInfo')
+
+  try {
+    return userInfo ? JSON.parse(userInfo) : {}
+  } catch (error) {
+    console.error('Failed to parse userInfo from localStorage:', error)
+    return null
+  }
 }
-export const setRefreshTokenToLS = (refresh_token: string) => {
-  localStorage.setItem('refresh_token', refresh_token)
-}
+
+export const setAccessTokenToLS = (access_token: string) =>
+  isClient && localStorage.setItem('access_token', access_token)
+export const setRefreshTokenToLS = (refresh_token: string) =>
+  isClient && localStorage.setItem('refresh_token', refresh_token)
+export const setProfileToLS = (profile: User) => isClient && localStorage.setItem('profile', JSON.stringify(profile))
 
 export const clearLS = () => {
-  localStorage.removeItem('access_token')
-  localStorage.removeItem('refresh_token')
-  localStorage.removeItem('profile')
-}
-
-export const getAccessTokenFromLS = () => localStorage.getItem('access_token') || ''
-export const getRefreshTokenFromLS = () => localStorage.getItem('refresh_token') || ''
-export const getProfileFromLS = () => {
-  const result = localStorage.getItem('profile')
-  return result ? JSON.parse(result) : null
-}
-export const setProfileToLS = (profile: User) => {
-  localStorage.setItem('profile', JSON.stringify(profile))
+  if (isClient) {
+    localStorage.removeItem('access_token')
+    localStorage.removeItem('refresh_token')
+    localStorage.removeItem('profile')
+  }
 }
 
 export const handleError = <T extends Record<string, any>>(

@@ -1,10 +1,13 @@
 'use client'
 
+import { pathUrl } from '@/app/constant/path'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Icons } from '@/components/ui/icon'
+import { redirect } from 'next/navigation'
+import path from 'path'
 
-export default function VerifyEmailPage() {
+export default function FormVerifyEmail() {
   return (
     <div className='min-h-screen bg-gradient-to-b from-blue-100 to-white dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4'>
       <Card className='w-full max-w-md'>
@@ -21,7 +24,7 @@ export default function VerifyEmailPage() {
           <div className='text-center space-y-4'>
             <Icons.checkCircle className='h-12 w-12 text-green-500 mx-auto' />
             <p className='text-lg font-semibold'>Email Verified Successfully!</p>
-            <Button className='w-full' onClick={() => (window.location.href = '/')}>
+            <Button className='w-full' onClick={() => redirect(pathUrl.home)}>
               Continue to Dashboard
             </Button>
           </div>
