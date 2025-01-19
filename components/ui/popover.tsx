@@ -2,8 +2,7 @@
 
 import * as React from 'react'
 import * as PopoverPrimitive from '@radix-ui/react-popover'
-
-import { cn } from '@/lib/axios.validate'
+import { cn } from '@/app/utils/utils'
 
 const Popover = PopoverPrimitive.Root
 

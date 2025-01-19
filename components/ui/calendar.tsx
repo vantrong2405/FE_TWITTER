@@ -3,9 +3,8 @@
 import * as React from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { DayPicker } from 'react-day-picker'
-
-import { cn } from '@/lib/axios.validate'
 import { buttonVariants } from '@/components/ui/button'
+import { cn } from '@/app/utils/utils'
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>
 
