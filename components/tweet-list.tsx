@@ -13,7 +13,8 @@ const initialTweets = [
     user: {
       name: 'John Doe',
       handle: '@johndoe',
-      avatar: '/placeholder-avatar.jpg'
+      avatar:
+        'https://png.pngtree.com/png-vector/20190811/ourlarge/pngtree-baby-animal-cute-panda-smile-png-image_1687512.jpg'
     },
     content: 'Just launched my new portfolio website! Check it out at https://johndoe.com 🚀 #WebDev #Portfolio',
     timestamp: new Date(Date.now() - 1000 * 60 * 15), // 15 minutes ago
@@ -26,7 +27,8 @@ const initialTweets = [
     user: {
       name: 'Jane Smith',
       handle: '@janesmith',
-      avatar: '/placeholder-avatar.jpg'
+      avatar:
+        'https://png.pngtree.com/png-vector/20190811/ourlarge/pngtree-baby-animal-cute-panda-smile-png-image_1687512.jpg'
     },
     content:
       'Excited to start my new job as a Senior React Developer next week! Any tips for the first day? 😊 #NewJob #ReactJS',
@@ -68,20 +70,25 @@ export function TweetList() {
                     {formatDistanceToNow(tweet.timestamp, { addSuffix: true })}
                   </span>
                 </div>
-                <p className='mt-2 text-gray-900 dark:text-gray-100 whitespace-pre-wrap'>{tweet.content}</p>
+                <p className='mt-2 text-gray-900 whitespace-pre-wrap'>{tweet.content}</p>
+                <div className='mt-2 rounded-lg overflow-hidden'>
+                  <img
+                    src={
+                      'https://www.shutterstock.com/image-vector/no-image-available-sign-isolated-260nw-1976693516.jpg'
+                    }
+                    alt='Tweet media'
+                    className='w-full h-auto'
+                  />
+                </div>
                 <div className='flex justify-between mt-4 text-gray-500'>
-                  <Button
-                    variant='ghost'
-                    size='sm'
-                    className='hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900'
-                  >
+                  <Button variant='ghost' size='sm' className='hover:text-blue-500 hover:bg-blue-50 '>
                     <Icons.messageCircle className='h-4 w-4 mr-1' />
                     {tweet.replies}
                   </Button>
                   <Button
                     variant='ghost'
                     size='sm'
-                    className='hover:text-green-500 hover:bg-green-50 dark:hover:bg-green-900'
+                    className='hover:text-green-500 hover:bg-green-50 '
                     onClick={() => handleRetweet(tweet.id)}
                   >
                     <Icons.repeat className='h-4 w-4 mr-1' />
@@ -90,17 +97,13 @@ export function TweetList() {
                   <Button
                     variant='ghost'
                     size='sm'
-                    className='hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900'
+                    className='hover:text-red-500 hover:bg-red-50 '
                     onClick={() => handleLike(tweet.id)}
                   >
                     <Icons.heart className='h-4 w-4 mr-1' />
                     {tweet.likes}
                   </Button>
-                  <Button
-                    variant='ghost'
-                    size='sm'
-                    className='hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900'
-                  >
+                  <Button variant='ghost' size='sm' className='hover:text-blue-500 hover:bg-blue-50 '>
                     <Icons.share className='h-4 w-4' />
                   </Button>
                 </div>

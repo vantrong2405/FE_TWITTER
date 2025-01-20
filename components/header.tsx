@@ -13,17 +13,21 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Icons } from './ui/icon'
+import { User } from '@/app/type/user.type'
+import { getFirstLetter } from '@/app/utils/utils'
+import { ModeToggle } from './ui/toggle'
 
-export function Header() {
+export function Header({
+  profile,
+  handleLogout
+}: {
+  profile: User
+  handleLogout: (e?: React.BaseSyntheticEvent) => Promise<void>
+}) {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
 
-  const handleLogout = () => {
-    console.log('Logout clicked')
-    // Implement logout logic here
-  }
-
   return (
-    <header className='bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-10'>
+    <header className=' shadow-sm sticky top-0 z-10'>
       <div className='container mx-auto px-4 py-3 flex items-center justify-between'>
         <div className='flex items-center space-x-4'>
           <Icons.twitter className='h-8 w-8 text-blue-500' />
@@ -49,22 +53,24 @@ export function Header() {
             <Icons.mail className='h-5 w-5' />
             <span className='hidden md:inline ml-2'>Messages</span>
           </Button>
+          <ModeToggle />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant='ghost' size='sm' className='rounded-full'>
-                <Avatar className='h-8 w-8'>
-                  <AvatarImage src='/placeholder-avatar.jpg' alt='@johndoe' />
-                  <AvatarFallback>JD</AvatarFallback>
+              <Button variant='outline' size='icon' className='rounded-full'>
+                <Avatar>
+                  <AvatarFallback className='cursor-pointer hover:opacity-70 border'>
+                    {getFirstLetter(profile?.name ?? '')}
+                  </AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='end'>
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>{profile?.email ?? ''}</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuItem className='cursor-pointer'>Profile</DropdownMenuItem>
+              <DropdownMenuItem className='cursor-pointer'>Settings</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleLogout}>
+              <DropdownMenuItem className='cursor-pointer' onClick={handleLogout}>
                 <Icons.logOut className='mr-2 h-4 w-4' />
                 <span>Log out</span>
               </DropdownMenuItem>

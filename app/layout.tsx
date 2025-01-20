@@ -5,6 +5,7 @@ import Providers from './providers'
 import { ToastContainer, toast } from 'react-toastify'
 import AuthGuard from './auth-layout'
 import { Suspense } from 'react'
+import { ThemeProvider } from '@/components/theme-provider'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -27,11 +28,15 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang='en'>
+    <html lang='en' suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers>
           <Suspense>
-            <AuthGuard>{children}</AuthGuard>
+            <AuthGuard>
+              <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
+                {children}
+              </ThemeProvider>
+            </AuthGuard>
           </Suspense>
         </Providers>
         <ToastContainer />

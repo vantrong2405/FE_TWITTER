@@ -4,6 +4,7 @@ import axios from 'axios'
 import { HttpStatusCode } from '../constant/httpStatusCode.enum'
 import clsx, { ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import { format } from 'date-fns'
 
 export const isClient = typeof window !== 'undefined'
 
@@ -12,7 +13,7 @@ export const getRefreshTokenFromLS = () => (isClient ? localStorage.getItem('ref
 export const getProfileFromLS = (): User | null => {
   if (!isClient) return null
 
-  const userInfo = localStorage.getItem('userInfo')
+  const userInfo = localStorage.getItem('profile')
 
   try {
     return userInfo ? JSON.parse(userInfo) : {}
@@ -56,4 +57,19 @@ export const handleError = <T extends Record<string, any>>(
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
+}
+
+export function getFirstLetter(userName: string): string {
+  return userName ? userName.trim().charAt(0).toUpperCase() : ''
+}
+
+export function formatDate(date: Date | undefined | string): string {
+  try {
+    if (!date) return ''
+    const parsedDate = typeof date === 'string' ? new Date(date) : date
+    return format(parsedDate, 'yyyy-MM-dd')
+  } catch (error) {
+    console.error('Error formatting date:', error)
+    return ''
+  }
 }
