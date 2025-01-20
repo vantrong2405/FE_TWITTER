@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export function WhoToFollow({ friends }: { friends: User[] }) {
-  const { chat, setChat, setcurrentIdChatReceiver } = useStoreLocal()
+  const { addChat } = useStoreLocal()
   return (
     <Card>
       <CardHeader>
@@ -21,8 +21,8 @@ export function WhoToFollow({ friends }: { friends: User[] }) {
                 key={user._id}
                 className='flex items-center justify-between'
                 onClick={() => {
-                  setChat()
-                  setcurrentIdChatReceiver(user)
+                  console.log('Add chat:', user._id)
+                  addChat(user)
                 }}
               >
                 <div className='flex items-center space-x-3'>

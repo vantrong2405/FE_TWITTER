@@ -19,6 +19,7 @@ import { redirect } from 'next/navigation'
 import { pathUrl } from '../constant/path'
 import { useGetFriends } from '../hook/useGetFriends'
 import ChatBoxReal from '@/components/ui/chat'
+import { ChatContainer } from '@/components/ui/ChatContainer'
 
 export default function FormDashBoard() {
   const { data: profile } = useProfile()
@@ -53,7 +54,7 @@ export default function FormDashBoard() {
   }, [isLogin])
 
   return (
-    <div className='min-h-screen bg-gray-50 '>
+    <div className='min-h-screen bg-gray-50  '>
       <Header profile={profile?.data.result} handleLogout={onSubmit} />
       <div className='container mx-auto px-4 py-8 flex flex-col lg:flex-row gap-6'>
         <Sidebar className='hidden lg:block lg:w-1/4' />
@@ -67,7 +68,7 @@ export default function FormDashBoard() {
           <TrendingTopics />
           <WhoToFollow friends={friends?.data.result} />
         </aside>
-        <ChatBoxReal />
+        <ChatContainer />
       </div>
     </div>
   )
