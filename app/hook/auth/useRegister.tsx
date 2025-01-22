@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query'
 export function useRegister() {
   const { mutate: mutateRegister, isPending: isPendingRegister } = useMutation({
     mutationFn: (body: IValidateRegister) => {
-      return authApi.loginAccount(body)
+      return authApi.registerAccount(body)
     },
     onSuccess: (data) => {},
     onError: (error) => {}

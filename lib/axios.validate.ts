@@ -1,15 +1,21 @@
 import { AxiosError, isAxiosError } from 'axios'
 import { HttpStatusCode } from '../app/constant/httpStatusCode.enum'
-import { ExpiredTokenErrorData } from '../app/type/auth.type'
-import { clsx, type ClassValue } from 'clsx'
-import { twMerge } from 'tailwind-merge'
+import { SuccessResponse } from '@/app/type/utils.type'
 
 export function isAxiosUnauthorizedError<UnauthorizedError>(error: unknown): error is AxiosError<UnauthorizedError> {
   return isAxiosError(error) && error.response?.status === HttpStatusCode.Unauthorized
 }
 
 export function isAxiosExpiredTokenError(error: unknown): boolean {
-  return (error as AxiosError<ExpiredTokenErrorData>).response?.data?.data?.name === 'EXPIRED_TOKEN'
+  return (
+    (
+      error as AxiosError<{
+        data: {
+          name: string
+        }
+      }>
+    ).response?.data?.data?.name === 'EXPIRED_TOKEN'
+  )
 }
 
 export function isAxiosUnprocessableEntityError<UnprocessableEntityError>(
@@ -17,3 +23,5 @@ export function isAxiosUnprocessableEntityError<UnprocessableEntityError>(
 ): error is AxiosError<UnprocessableEntityError> {
   return isAxiosError(error) && error.response?.status === HttpStatusCode.UnprocessableEntity
 }
+
+export type RefreshTokenResponse = SuccessResponse<{ access_token: string }>

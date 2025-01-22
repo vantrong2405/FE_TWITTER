@@ -3,12 +3,13 @@
 import { FormEvent, useEffect, useState } from 'react'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { getAccessTokenFromLS, getProfileFromLS } from '@/app/utils/utils'
+import { getAccessTokenFromLS } from '@/app/utils/utils'
 import socket from '@/app/utils/socket'
 import { Button } from '../ui/button'
 import { SendHorizontal } from 'lucide-react'
 import { Input } from '../ui/input'
 import { User } from '@/app/type/user.type'
+import { useStoreLocal } from '@/app/store/useStoreLocal'
 
 const LIMIT = 10
 const PAGE = 1
@@ -19,7 +20,7 @@ type ChatBoxProps = {
 }
 
 export default function ChatBoxReal({ receiver, onClose }: ChatBoxProps) {
-  const profile = getProfileFromLS() // Lấy thông tin người dùng hiện tại
+  const { profile } = useStoreLocal()
   const accessToken = getAccessTokenFromLS() // Lấy access token
   const [value, setValue] = useState('')
   const [conversations, setConversations] = useState<
