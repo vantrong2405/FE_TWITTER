@@ -10,8 +10,7 @@ import {
   setRefreshTokenToLS
 } from '../app/utils/utils'
 import { HttpStatusCode } from '../app/constant/httpStatusCode.enum'
-import { RefreshTokenResponse } from '../app/type/auth.type'
-import { isAxiosExpiredTokenError } from './axios.validate'
+import { isAxiosExpiredTokenError, RefreshTokenResponse } from './axios.validate'
 import { pathUrl } from '@/app/constant/path'
 
 class Http {
@@ -53,10 +52,6 @@ class Http {
             setRefreshTokenToLS(this.refreshToken)
           }
           setProfileToLS(data.data.user)
-        } else if (url === pathUrl.logout) {
-          this.accessToken = ''
-          this.refreshToken = ''
-          clearLS()
         }
         if (data.message) {
           toast.success(data.message)

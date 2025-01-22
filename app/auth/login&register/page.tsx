@@ -1,4 +1,4 @@
-import Form from './form'
+import FormAuth from './form'
 export default function page() {
-  return <Form />
+  return <FormAuth />
 }

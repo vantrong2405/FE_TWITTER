@@ -1,50 +1,21 @@
 'use client'
 
-import { use, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { AlertCircle, Lock, KeyRound, ArrowRight } from 'lucide-react'
-import { useForm } from 'react-hook-form'
-import { TypeFormResetPassword } from '@/app/schemas/type.schema'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { resetSchema } from '@/app/schemas/auth.schema'
-import { useMutation } from '@tanstack/react-query'
-import authApi from '@/app/apis/auth.api'
-import { handleError } from '@/app/utils/utils'
-import { useParams, useSearchParams } from 'next/navigation'
+import { ArrowRight } from 'lucide-react'
+import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import imgTweet from '../../assets/images/twitter.png'
+import { useResetPasswordFormSchema } from '@/app/schemas/resetPassword.schema'
+import { useResetPassword } from '@/app/hook/auth/useResetPassword'
 export default function ResetPassword() {
-  const {
-    register,
-    handleSubmit,
-    setError,
-    formState: { errors }
-  } = useForm<TypeFormResetPassword>({
-    resolver: yupResolver(resetSchema)
-  })
-
+  const { register, handleSubmit, errors } = useResetPasswordFormSchema()
   const searchParams = useSearchParams()
   const token = searchParams.get('token') || ''
-
-  const resetAccountMutation = useMutation({
-    mutationFn: (body: TypeFormResetPassword) => {
-      const payload = {
-        ...body,
-        forgot_password_token: token
-      }
-      return authApi.resetPassword(payload)
-    }
-  })
-
-  const onSubmit = handleSubmit((data) => {
-    resetAccountMutation.mutate(data, {
-      onSuccess: (data) => {},
-      onError: (error) => handleError(error, setError, {} as TypeFormResetPassword)
-    })
-  })
+  const { mutateResetPassword, isPendingResetPassword } = useResetPassword()
+  const onSubmit = handleSubmit((data) => mutateResetPassword({ ...data, forgot_password_token: token }))
 
   return (
     <div className='flex items-center justify-center min-h-screen bg-gray-100'>
@@ -87,8 +58,8 @@ export default function ResetPassword() {
             <Button
               type='submit'
               className='w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition duration-200'
-              isLoading={resetAccountMutation.isPending}
-              disabled={resetAccountMutation.isPending}
+              isLoading={isPendingResetPassword}
+              disabled={isPendingResetPassword}
             >
               Reset password
               <ArrowRight className='ml-2' size={18} />

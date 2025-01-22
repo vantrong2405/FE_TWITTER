@@ -1,5 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { Icons } from './ui/icon'
+import Link from 'next/link'
+import { pathUrl } from '@/app/constant/path'
 
 export function Sidebar({ className }: { className?: string }) {
   return (
@@ -17,10 +19,12 @@ export function Sidebar({ className }: { className?: string }) {
           <Icons.bell className='h-5 w-5 mr-2' />
           Notifications
         </Button>
-        <Button variant='ghost' className='w-full justify-start'>
-          <Icons.mail className='h-5 w-5 mr-2' />
-          Messages
-        </Button>
+        <Link href={pathUrl.message}>
+          <Button variant='ghost' className='w-full justify-start'>
+            <Icons.mail className='h-5 w-5 mr-2' />
+            Messages
+          </Button>
+        </Link>
         <Button variant='ghost' className='w-full justify-start'>
           <Icons.bookmark className='h-5 w-5 mr-2' />
           Bookmarks

@@ -18,7 +18,13 @@ import {
   MessageCircle,
   Repeat,
   Heart,
-  Share
+  Share,
+  Search,
+  LogOut,
+  MapPin,
+  Link,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react'
 
 export const Icons = {
@@ -41,5 +47,11 @@ export const Icons = {
   messageCircle: MessageCircle,
   repeat: Repeat,
   heart: Heart,
-  share: Share
+  share: Share,
+  search: Search,
+  logOut: LogOut,
+  mapPin: MapPin,
+  link: Link,
+  chevronLeft: ChevronLeft,
+  chevronRight: ChevronRight
 }

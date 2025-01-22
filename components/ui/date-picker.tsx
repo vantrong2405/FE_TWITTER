@@ -2,12 +2,11 @@
 
 import * as React from 'react'
 import { CalendarIcon } from 'lucide-react'
-import { format } from 'date-fns'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { UseFormSetValue } from 'react-hook-form'
-import { cn } from '@/app/utils/utils'
+import { cn, formatDate } from '@/app/utils/utils'
 
 interface IProps {
   name: string
@@ -21,7 +20,7 @@ export function DatePicker({ name, setValue, errorMessage, className }: IProps) 
   const [selectedDate, setSelectedDate] = React.useState<string | undefined>()
 
   const handleDateChange = (date: Date | undefined) => {
-    const formattedDate = date ? format(date, 'yyyy-MM-dd') : ''
+    const formattedDate = formatDate(date)
     setSelectedDate(formattedDate)
     setValue(name, formattedDate, { shouldValidate: true })
   }
