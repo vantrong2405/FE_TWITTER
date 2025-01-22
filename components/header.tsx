@@ -14,17 +14,26 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Icons } from './ui/icon'
 import { User } from '@/app/type/user.type'
-import { getFirstLetter } from '@/app/utils/utils'
+import { getFirstLetter, getRefreshTokenFromLS } from '@/app/utils/utils'
 import { ModeToggle } from './ui/toggle'
+import { IValidateLogout } from '@/app/schemas/logout.schema'
+import { AxiosResponse } from 'axios'
+import { UseMutateFunction } from '@tanstack/react-query'
 
 export function Header({
   profile,
-  handleLogout
+  mutateLogout,
+  isPendingLogout
 }: {
-  profile: User
-  handleLogout: (e?: React.BaseSyntheticEvent) => Promise<void>
+  profile: User | null
+  mutateLogout: UseMutateFunction<AxiosResponse<any, any>, Error, IValidateLogout, unknown>
+  isPendingLogout: boolean
 }) {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const handleSubmit = () => {
+    const refresh_token = getRefreshTokenFromLS() || ''
+    mutateLogout({ refresh_token })
+  }
 
   return (
     <header className=' shadow-sm sticky top-0 z-10'>
@@ -70,7 +79,7 @@ export function Header({
               <DropdownMenuItem className='cursor-pointer'>Profile</DropdownMenuItem>
               <DropdownMenuItem className='cursor-pointer'>Settings</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className='cursor-pointer' onClick={handleLogout}>
+              <DropdownMenuItem className='cursor-pointer' onClick={handleSubmit} disabled={isPendingLogout}>
                 <Icons.logOut className='mr-2 h-4 w-4' />
                 <span>Log out</span>
               </DropdownMenuItem>

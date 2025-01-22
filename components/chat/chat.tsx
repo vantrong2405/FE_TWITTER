@@ -5,9 +5,9 @@ import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getAccessTokenFromLS, getProfileFromLS } from '@/app/utils/utils'
 import socket from '@/app/utils/socket'
-import { Button } from './button'
+import { Button } from '../ui/button'
 import { SendHorizontal } from 'lucide-react'
-import { Input } from './input'
+import { Input } from '../ui/input'
 import { User } from '@/app/type/user.type'
 
 const LIMIT = 10
@@ -114,7 +114,7 @@ export default function ChatBoxReal({ receiver, onClose }: ChatBoxProps) {
   }, [receiver])
 
   return (
-    <div className='relative w-[330px] h-[440px] bg-white border rounded-xl shadow-md'>
+    <div className='relative flex flex-col w-[350px] h-[450px] max-w-md mx-auto border border-gray-200 shadow-lg rounded-lg bg-white'>
       {/* Header */}
       <div className='flex items-center justify-between p-4 border-b'>
         <div className='flex items-center'>

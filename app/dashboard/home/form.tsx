@@ -8,65 +8,58 @@ import { WhoToFollow } from '@/components/ui/who-to-follow'
 import { UserProfile } from '@/components/ui/user-profile'
 import { NewsCarousel } from '@/components/ui/news-carousel'
 import { TrendingTopics } from '@/components/ui/trending-topics'
-import { useProfile } from '../hook/useProfile'
+import { useProfile } from '../../hook/user/usegetProfile'
 import { useMutation } from '@tanstack/react-query'
-import authApi from '../apis/auth.api'
-import { clearLS, getRefreshTokenFromLS, handleError } from '../utils/utils'
-import { TypeFormLogout } from '../schemas/type.schema'
-import { useForm } from 'react-hook-form'
+import authApi from '../../apis/auth.api'
+import { clearLS, getProfileFromLS, getRefreshTokenFromLS, handleError } from '../../utils/utils'
 import { useEffect, useState } from 'react'
 import { redirect } from 'next/navigation'
-import { pathUrl } from '../constant/path'
-import { useGetFriends } from '../hook/useGetFriends'
-import ChatBoxReal from '@/components/ui/chat'
+import { pathUrl } from '../../constant/path'
+import { useGetFriends } from '../../hook/friends/useGetFriends'
+import ChatBoxReal from '@/components/chat/chat'
 import { ChatContainer } from '@/components/ui/ChatContainer'
+import { useStoreLocal } from '@/app/store/useStoreLocal'
+import { useLogoutFormSchema } from '@/app/schemas/logout.schema'
+import { useLogout } from '@/app/hook/auth/useLogout'
+import { useFollowFriend } from '@/app/hook/friends/useFollowFriend'
 
 export default function FormDashBoard() {
-  const { data: profile } = useProfile()
-  const { data: friends } = useGetFriends()
-  console.log('🚀 ~ FormDashBoard ~ friends:', friends)
+  // state
   const [isLogin, setIsLogin] = useState(false)
-  const { handleSubmit, setError } = useForm<TypeFormLogout>()
-
-  const logoutAccountMutation = useMutation({
-    mutationFn: (body: TypeFormLogout) => {
-      const refresh_token = getRefreshTokenFromLS() || ''
-      const data = { ...body, refresh_token }
-      return authApi.logoutAccount(data)
-    }
-  })
-
-  const onSubmit = handleSubmit((data) => {
-    logoutAccountMutation.mutate(data, {
-      onSuccess: (data) => {
-        clearLS()
-        setIsLogin(true)
-      },
-      onError: (error) => handleError(error, setError, {} as TypeFormLogout)
-    })
-  })
+  // store local
+  const { profile, addChat } = useStoreLocal()
+  // useQuery
+  const { data: friends } = useGetFriends()
+  // hook
+  const { mutateLogout, isPendingLogout } = useLogout()
+  const { mutateFollowFriend, isPendingFollowFriend } = useFollowFriend()
 
   useEffect(() => {
     if (isLogin) {
       setIsLogin(false)
-      redirect(pathUrl.home)
+      redirect(pathUrl.login_register)
     }
   }, [isLogin])
 
   return (
     <div className='min-h-screen bg-gray-50  '>
-      <Header profile={profile?.data.result} handleLogout={onSubmit} />
+      <Header profile={profile} mutateLogout={mutateLogout} isPendingLogout={isPendingLogout} />
       <div className='container mx-auto px-4 py-8 flex flex-col lg:flex-row gap-6'>
         <Sidebar className='hidden lg:block lg:w-1/4' />
         <main className='flex-grow max-w-2xl w-full mx-auto lg:mx-0'>
-          <UserProfile profile={profile?.data.result} />
+          <UserProfile profile={profile} />
           <TweetComposer />
           <NewsCarousel />
           <TweetList />
         </main>
         <aside className='hidden xl:block w-1/4 space-y-6'>
           <TrendingTopics />
-          <WhoToFollow friends={friends?.data.result} />
+          <WhoToFollow
+            friends={friends?.data.result}
+            addChat={addChat}
+            mutateFollowFriend={mutateFollowFriend}
+            isPendingFollowFriend={isPendingFollowFriend}
+          />
         </aside>
         <ChatContainer />
       </div>

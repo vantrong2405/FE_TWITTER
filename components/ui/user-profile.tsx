@@ -5,7 +5,7 @@ import { Icons } from './icon'
 import { User } from '@/app/type/user.type'
 import { formatDate, getFirstLetter } from '@/app/utils/utils'
 
-export function UserProfile({ profile }: { profile: User }) {
+export function UserProfile({ profile }: { profile: User | null }) {
   return (
     <Card className='mb-6 overflow-hidden'>
       <div className='h-32 bg-gradient-to-r from-blue-400 to-purple-500'></div>

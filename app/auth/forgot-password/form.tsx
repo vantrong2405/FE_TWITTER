@@ -6,40 +6,17 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import Link from 'next/link'
 import { Icons } from '@/components/ui/icon'
-import { useForm } from 'react-hook-form'
-import { TypeFormDataForgot } from '@/app/schemas/type.schema'
-import authApi from '@/app/apis/auth.api'
-import { useMutation } from '@tanstack/react-query'
-import { forgotSchema } from '@/app/schemas/auth.schema'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { handleError } from '@/app/utils/utils'
+import { useForgotPassword } from '@/app/hook/auth/useForgotPassword'
 import { pathUrl } from '@/app/constant/path'
+import { useForgotPasswordFormSchema } from '@/app/schemas/forgotPassword.schema'
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
-  const {
-    register,
-    handleSubmit,
-    setError,
-    formState: { errors }
-  } = useForm<TypeFormDataForgot>({
-    resolver: yupResolver(forgotSchema)
-  })
-
-  const forgotAccountMutation = useMutation({
-    mutationFn: (body: TypeFormDataForgot) => authApi.forgotAccount(body)
-  })
-
-  const onSubmit = handleSubmit((data) => {
-    forgotAccountMutation.mutate(data, {
-      onSuccess: (data) => {
-        setIsSubmitted(true)
-      },
-      onError: (error) => handleError(error, setError, {} as TypeFormDataForgot)
-    })
-  })
+  const { register, handleSubmit, errors } = useForgotPasswordFormSchema()
+  const { mutateForgotPassword, isPendingForgotPassword } = useForgotPassword({ setIsSubmitted })
+  const onSubmit = handleSubmit((data) => mutateForgotPassword(data))
 
   return (
     <div className='min-h-screen bg-gradient-to-b from-blue-100 to-white  flex items-center justify-center p-4'>

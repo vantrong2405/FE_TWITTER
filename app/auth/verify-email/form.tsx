@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Icons } from '@/components/ui/icon'
 import { redirect } from 'next/navigation'
-import path from 'path'
 
 export default function FormVerifyEmail() {
   return (
