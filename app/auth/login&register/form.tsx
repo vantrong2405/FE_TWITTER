@@ -9,6 +9,7 @@ import { getOauthGoogleUrl } from '@/app/hook/auth/useLoginOathGoogle'
 
 export default function FormAuth() {
   const oauthURL = getOauthGoogleUrl()
+
   return (
     <div className='min-h-screen bg-gradient-to-b from-blue-100 to-white flex items-center justify-center p-4'>
       <Card className='w-full max-w-md shadow-xl'>

@@ -8,38 +8,44 @@ import { WhoToFollow } from '@/components/ui/who-to-follow'
 import { UserProfile } from '@/components/ui/user-profile'
 import { NewsCarousel } from '@/components/ui/news-carousel'
 import { TrendingTopics } from '@/components/ui/trending-topics'
-import { useProfile } from '../../hook/user/usegetProfile'
-import { useMutation } from '@tanstack/react-query'
-import authApi from '../../apis/auth.api'
-import { clearLS, getProfileFromLS, getRefreshTokenFromLS, handleError } from '../../utils/utils'
+import { getAccessTokenFromLS, getRefreshTokenFromLS } from '../../utils/utils'
 import { useEffect, useState } from 'react'
 import { redirect } from 'next/navigation'
 import { pathUrl } from '../../constant/path'
 import { useGetFriends } from '../../hook/friends/useGetFriends'
-import ChatBoxReal from '@/components/chat/chat'
 import { ChatContainer } from '@/components/ui/ChatContainer'
 import { useStoreLocal } from '@/app/store/useStoreLocal'
-import { useLogoutFormSchema } from '@/app/schemas/logout.schema'
 import { useLogout } from '@/app/hook/auth/useLogout'
 import { useFollowFriend } from '@/app/hook/friends/useFollowFriend'
+import { useProfile } from '@/app/hook/user/usegetProfile'
 
 export default function FormDashBoard() {
   // state
+  const [executed, setExecuted] = useState<boolean>(false)
   const [isLogin, setIsLogin] = useState(false)
   // store local
-  const { profile, addChat } = useStoreLocal()
+  const { addChat } = useStoreLocal()
   // useQuery
   const { data: friends } = useGetFriends()
   // hook
-  const { mutateLogout, isPendingLogout } = useLogout()
+  const { data: profile } = useProfile({ executed, setExecuted })
+  const { mutateLogout, isPendingLogout } = useLogout({ setIsLogin })
   const { mutateFollowFriend, isPendingFollowFriend } = useFollowFriend()
-
+  // useEffect
   useEffect(() => {
     if (isLogin) {
       setIsLogin(false)
       redirect(pathUrl.login_register)
     }
   }, [isLogin])
+
+  useEffect(() => {
+    const access_token = getAccessTokenFromLS()
+    const refresh_token = getRefreshTokenFromLS()
+    if (access_token && refresh_token && !executed) {
+      setExecuted(true)
+    }
+  }, [])
 
   return (
     <div className='min-h-screen bg-gray-50  '>
