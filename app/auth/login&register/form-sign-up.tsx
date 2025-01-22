@@ -3,39 +3,16 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { useMutation } from '@tanstack/react-query'
-import authApi from '@/app/apis/auth.api'
 import { DatePicker } from '@/components/ui/date-picker'
-import { registerSchema } from '@/app/schemas/auth.schema'
-import { TypeFormDataRegister } from '@/app/schemas/type.schema'
-import { handleError } from '@/app/utils/utils'
 import Link from 'next/link'
 import { pathUrl } from '@/app/constant/path'
+import { useRegisterFormSchema } from '@/app/schemas/register.shema'
+import { useRegister } from '@/app/hook/auth/useRegister'
 
 export function FormSignUp() {
-  const {
-    register,
-    handleSubmit,
-    setError,
-    setValue,
-    formState: { errors }
-  } = useForm<TypeFormDataRegister>({
-    resolver: yupResolver(registerSchema)
-  })
-
-  const registerAccountMutation = useMutation({
-    mutationFn: (body: TypeFormDataRegister) => authApi.registerAccount(body)
-  })
-
-  const onSubmit = handleSubmit((data) => {
-    registerAccountMutation.mutate(data, {
-      onSuccess: () => {},
-      onError: (error) => handleError(error, setError, {} as TypeFormDataRegister)
-    })
-  })
-
+  const { register, handleSubmit, setError, setValue, errors } = useRegisterFormSchema()
+  const { mutateRegister, isPendingRegister } = useRegister()
+  const onSubmit = handleSubmit((data) => mutateRegister(data))
   return (
     <form onSubmit={onSubmit} className='space-y-4'>
       <div className='space-y-2'>
@@ -91,12 +68,7 @@ export function FormSignUp() {
           className='mt-8'
         />
       </div>
-      <Button
-        type='submit'
-        className='w-full'
-        isLoading={registerAccountMutation.isPending}
-        disabled={registerAccountMutation.isPending}
-      >
+      <Button type='submit' className='w-full' isLoading={isPendingRegister} disabled={isPendingRegister}>
         Sign up
       </Button>
       <Link href={pathUrl.forgot_password} className='text-end font-normal hover:underline block'>

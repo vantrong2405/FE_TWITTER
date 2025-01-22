@@ -27,7 +27,10 @@ export function TweetComposer() {
         <form onSubmit={handleSubmit} className='space-y-4'>
           <div className='flex space-x-4'>
             <Avatar>
-              <AvatarImage src='/placeholder-avatar.jpg' alt='@username' />
+              <AvatarImage
+                src='https://png.pngtree.com/png-vector/20190811/ourlarge/pngtree-baby-animal-cute-panda-smile-png-image_1687512.jpg'
+                alt='@username'
+              />
               <AvatarFallback>UN</AvatarFallback>
             </Avatar>
             <Textarea

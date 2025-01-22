@@ -3,47 +3,21 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { useMutation } from '@tanstack/react-query'
-import authApi from '@/app/apis/auth.api'
-import 'react-toastify/dist/ReactToastify.css'
-import { loginSchema } from '@/app/schemas/auth.schema'
-import { TypeFormDataLogin } from '@/app/schemas/type.schema'
-import { handleError, setAccessTokenToLS, setRefreshTokenToLS } from '@/app/utils/utils'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { pathUrl } from '@/app/constant/path'
 import { useEffect, useState } from 'react'
-import { set } from 'date-fns'
+import { useProfile } from '@/app/hook/user/usegetProfile'
+import { useLogin } from '@/app/hook/auth/useLogin'
+import { useLoginFormSchema } from '@/app/schemas/login.schema'
 
 export function FormSignIn() {
   const [isLogin, setIsLogin] = useState(false)
-  const {
-    register,
-    handleSubmit,
-    setError,
-    formState: { errors }
-  } = useForm<TypeFormDataLogin>({
-    resolver: yupResolver(loginSchema)
-  })
-
-  const loginAccountMutation = useMutation({
-    mutationFn: (body: Omit<TypeFormDataLogin, 'confirm_password'>) => authApi.loginAccount(body)
-  })
-
-  const onSubmit = handleSubmit((data) => {
-    loginAccountMutation.mutate(data, {
-      onSuccess: (data) => {
-        const { access_token, refresh_token } = data.data.result
-        setAccessTokenToLS(access_token)
-        setRefreshTokenToLS(refresh_token)
-        console.log('123')
-        setIsLogin(true)
-      },
-      onError: (error) => handleError(error, setError, {} as TypeFormDataLogin)
-    })
-  })
+  const [executed, setExecuted] = useState<boolean>(false)
+  const { data } = useProfile({ executed, setExecuted })
+  const { register, handleSubmit, errors } = useLoginFormSchema()
+  const { mutateLogin, isPendingLogin } = useLogin({ setExecuted, setIsLogin })
+  const onSubmit = handleSubmit((data) => mutateLogin(data))
 
   useEffect(() => {
     if (isLogin) {
@@ -75,12 +49,7 @@ export function FormSignIn() {
           errorMessage={errors.password?.message}
         />
       </div>
-      <Button
-        type='submit'
-        className='w-full'
-        isLoading={loginAccountMutation.isPending}
-        disabled={loginAccountMutation.isPending}
-      >
+      <Button type='submit' className='w-full' isLoading={isPendingLogin} disabled={isPendingLogin}>
         Sign In
       </Button>
       <Link href={pathUrl.login_register} className='text-end font-normal hover:underline block'>

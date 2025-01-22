@@ -4,16 +4,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button'
 import { FormSignIn } from './form-sign-in'
 import { FormSignUp } from './form-sign-up'
-import { getProfileFromLS } from '@/app/utils/utils'
 import Link from 'next/link'
-import { getOauthGoogleUrl } from '@/app/hook/useLoginOathGoogle'
+import { getOauthGoogleUrl } from '@/app/hook/auth/useLoginOathGoogle'
 
 export default function FormAuth() {
   const oauthURL = getOauthGoogleUrl()
-  const profile = getProfileFromLS()
-  console.log('🚀 ~ FormAuth ~ profile:', profile)
   return (
-    <div className='min-h-screen bg-gradient-to-b from-blue-100 to-white dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4'>
+    <div className='min-h-screen bg-gradient-to-b from-blue-100 to-white flex items-center justify-center p-4'>
       <Card className='w-full max-w-md shadow-xl'>
         <CardHeader className='space-y-1'>
           <div className='flex justify-center mb-4'>
@@ -32,10 +29,8 @@ export default function FormAuth() {
               <path d='M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z' />
             </svg>
           </div>
-          <CardTitle className='text-3xl font-extrabold text-center text-gray-900 dark:text-white'>
-            Welcome to Twitter
-          </CardTitle>
-          <CardDescription className='text-center text-gray-500 dark:text-gray-400'>
+          <CardTitle className='text-3xl font-extrabold text-center text-gray-900'>Welcome to Twitter</CardTitle>
+          <CardDescription className='text-center text-gray-500 '>
             Login or create an account to get started
           </CardDescription>
         </CardHeader>
@@ -60,10 +55,10 @@ export default function FormAuth() {
         <CardFooter className='flex flex-col space-y-4 p-6 pt-0'>
           <div className='relative'>
             <div className='absolute inset-0 flex items-center'>
-              <span className='w-full border-t border-gray-300 dark:border-gray-600' />
+              <span className='w-full border-t border-gray-300' />
             </div>
             <div className='relative flex justify-center text-xs uppercase'>
-              <span className='bg-white dark:bg-gray-800 px-2 text-gray-500 dark:text-gray-400'>Or continue with</span>
+              <span className='bg-white px-2 text-gray-500 '>Or continue with</span>
             </div>
           </div>
           <div className='grid grid-cols-2 gap-4'>

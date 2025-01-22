@@ -1,12 +1,11 @@
-import { AuthResponse } from '../type/auth.type'
 import http from '../../lib/http'
 
 const authApi = {
   registerAccount(body: { name: string; email: string; password: string }) {
-    return http.post<AuthResponse>('/users/register', body)
+    return http.post('/users/register', body)
   },
   loginAccount(body: { email: string; password: string }) {
-    return http.post<AuthResponse>('/users/login', body)
+    return http.post('/users/login', body)
   },
   logoutAccount(body: { refresh_token: string }) {
     return http.post('/users/logout', body)

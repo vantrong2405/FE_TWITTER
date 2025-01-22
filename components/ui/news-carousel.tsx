@@ -48,7 +48,7 @@ export function NewsCarousel() {
               }}
             >
               <h4 className='font-medium mb-1'>{item.title}</h4>
-              <p className='text-sm text-gray-500 dark:text-gray-400'>{item.source}</p>
+              <p className='text-sm text-gray-500 '>{item.source}</p>
             </div>
           ))}
         </div>
