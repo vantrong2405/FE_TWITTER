@@ -25,14 +25,8 @@ const authApi = {
   resetPassword(body: { password: string; confirm_password: string; forgot_password_token: string }) {
     return http.post('/users/reset-password', body)
   },
-  changePassword(body: { old_password: string; new_password: string; confirm_new_password: string }) {
-    return http.post('/users/change-password', body)
-  },
   refreshToken(body: { refresh_token: string }) {
     return http.post('/users/refresh-token', body)
-  },
-  getMe() {
-    return http.get('/users/me')
   }
 }
 

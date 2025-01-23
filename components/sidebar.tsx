@@ -33,10 +33,12 @@ export function Sidebar({ className }: { className?: string }) {
           <Icons.list className='h-5 w-5 mr-2' />
           Lists
         </Button>
-        <Button variant='ghost' className='w-full justify-start'>
-          <Icons.user className='h-5 w-5 mr-2' />
-          Profile
-        </Button>
+        <Link href={pathUrl.profile}>
+          <Button variant='ghost' className='w-full justify-start'>
+            <Icons.user className='h-5 w-5 mr-2' />
+            Profile
+          </Button>
+        </Link>
         <Button variant='ghost' className='w-full justify-start'>
           <Icons.moreHorizontal className='h-5 w-5 mr-2' />
           More

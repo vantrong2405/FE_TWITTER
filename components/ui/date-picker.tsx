@@ -14,15 +14,22 @@ interface IProps {
   rules?: any
   errorMessage?: string
   className?: string
+  defaultValue?: string // Thêm defaultValue để nhận trực tiếp
+  value?: string // Thêm value để nhận trực tiếp
 }
 
-export function DatePicker({ name, setValue, errorMessage, className }: IProps) {
-  const [selectedDate, setSelectedDate] = React.useState<string | undefined>()
+export function DatePicker({ name, setValue, errorMessage, className, defaultValue }: IProps) {
+  const [selectedDate, setSelectedDate] = React.useState<string | undefined>(defaultValue)
+  console.log('🚀 ~ selectedDate:', selectedDate)
+  console.log('🚀 ~ defaultValue:', defaultValue)
 
+  // Cập nhật state khi value từ React Hook Form thay đổi
+
+  // Hàm xử lý thay đổi ngày
   const handleDateChange = (date: Date | undefined) => {
     const formattedDate = formatDate(date)
     setSelectedDate(formattedDate)
-    setValue(name, formattedDate, { shouldValidate: true })
+    setValue(name, formattedDate, { shouldValidate: true }) // Cập nhật giá trị vào React Hook Form
   }
 
   return (

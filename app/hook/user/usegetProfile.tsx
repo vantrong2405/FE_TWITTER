@@ -1,22 +1,15 @@
 import { useQuery } from '@tanstack/react-query'
-import authApi from '../../apis/auth.api'
 import { setProfileToLS } from '../../utils/utils'
-import { Dispatch, SetStateAction, use, useEffect } from 'react'
 import { useStoreLocal } from '@/app/store/useStoreLocal'
+import { userApi } from '@/app/apis/user.api'
+import { queryKey } from '@/app/constant/query-key'
 
-export function useProfile({
-  executed,
-  setExecuted
-}: {
-  executed: boolean
-  setExecuted: Dispatch<SetStateAction<boolean>>
-}) {
+export function useProfile() {
   const { setProfile } = useStoreLocal()
   const { data, refetch, isLoading, error } = useQuery({
-    queryKey: ['profile'],
-    enabled: executed,
+    queryKey: [queryKey.profile],
     queryFn: async () => {
-      const response = await authApi.getMe()
+      const response = await userApi.getMe()
       if (response?.data?.result) {
         setProfileToLS(response.data.result)
         setProfile(response.data.result)
@@ -25,12 +18,6 @@ export function useProfile({
       return response
     }
   })
-
-  useEffect(() => {
-    if (executed) {
-      setExecuted(false)
-    }
-  }, [executed])
 
   return { data, refetch, isLoading, error }
 }

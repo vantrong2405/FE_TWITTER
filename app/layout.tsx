@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import AuthGuard from './guard-layout'
 import { Suspense } from 'react'
 import { ThemeProvider } from '@/components/theme-provider'
+;<meta name='format-detection' content='telephone=no, date=no, email=no, address=no' />
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
