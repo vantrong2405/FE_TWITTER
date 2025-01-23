@@ -19,7 +19,10 @@ export const schema = yup.object({
     .max(200, 'Độ dài từ 6 - 200 ký tự')
     .oneOf([yup.ref('password')], 'Nhập lại password không khớp'),
   name: yup.string().trim().required('Tên sản phẩm là bắt buộc'),
-  date_of_birth: yup.string().trim().required('Ngày sinh là bắt buộc')
+  date_of_birth: yup.string().trim().required('Ngày sinh là bắt buộc'),
+  old_password: yup.string().trim().required('Mật khẩu cũ là bắt buộc'),
+  new_password: yup.string().trim().required('Mật khẩu mới là bắt buộc'),
+  confirm_new_password: yup.string().trim().required('Nhập lại mật khẩu mới là bắt buộc')
 })
 
 export const userSchema = yup.object({

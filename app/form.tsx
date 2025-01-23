@@ -3,19 +3,17 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { getOauthGoogleUrl } from './hook/auth/useLoginOathGoogle'
 import { pathUrl } from './constant/path'
-import { useState } from 'react'
-import type { User } from './type/user.type'
-import { getProfileFromLS } from './utils/utils'
+import { useStoreLocal } from './store/useStoreLocal'
 
 export default function GetStarted() {
   const oauthURL = getOauthGoogleUrl()
-  const [profile] = useState<User | null>(getProfileFromLS())
+  const { profile } = useStoreLocal()
 
   return (
-    <div className='flex min-h-screen flex-col bg-black text-white lg:flex-row'>
+    <div className='flex min-h-screen flex-col  lg:flex-row'>
       <div className='flex items-center justify-center p-4 lg:flex-1 lg:p-8'>
         <div className='w-[200px] sm:w-[300px] lg:w-[380px]'>
-          <svg viewBox='0 0 24 24' aria-hidden='true' className='h-full w-full text-white' fill='currentColor'>
+          <svg viewBox='0 0 24 24' aria-hidden='true' className='h-full w-full ' fill='currentColor'>
             <g>
               <path d='M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z'></path>
             </g>
@@ -30,20 +28,14 @@ export default function GetStarted() {
             <div className='space-y-3'>
               {profile && profile.email ? (
                 <Link href={pathUrl.home}>
-                  <Button
-                    variant='outline'
-                    className='relative w-full justify-center bg-white text-black hover:bg-gray-100'
-                  >
+                  <Button variant='outline' className='relative w-full justify-center'>
                     Get started - <b>{profile.email}</b>
                   </Button>
                 </Link>
               ) : (
                 <>
                   <Link href={oauthURL}>
-                    <Button
-                      variant='outline'
-                      className='relative w-full justify-center bg-white text-black hover:bg-gray-100'
-                    >
+                    <Button variant='outline' className='relative w-full justify-center'>
                       <svg className='w-5 h-5 mr-2' viewBox='0 0 24 24'>
                         <path
                           d='M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z'
@@ -71,11 +63,11 @@ export default function GetStarted() {
                       <span className='w-full border-t border-gray-800'></span>
                     </div>
                     <div className='relative flex justify-center text-xs uppercase'>
-                      <span className='bg-black px-2 text-gray-400'>or</span>
+                      <span className='k px-2 text-gray-400'>or</span>
                     </div>
                   </div>
                   <Link href={pathUrl.login_register}>
-                    <Button className='w-full bg-[#1d9bf0] text-white hover:bg-[#1a8cd8]'>Create account</Button>
+                    <Button className='w-full bg-[#1d9bf0]  hover:bg-[#1a8cd8]'>Create account</Button>
                   </Link>
                 </>
               )}

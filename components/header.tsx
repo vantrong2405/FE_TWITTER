@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Icons } from './ui/icon'
 import { User } from '@/app/type/user.type'
 import { getFirstLetter, getRefreshTokenFromLS } from '@/app/utils/utils'
@@ -78,7 +78,7 @@ export function Header({
             <DropdownMenuContent align='end'>
               <DropdownMenuLabel>{profile?.email ?? ''}</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <Link href={pathUrl.profile}>
+              <Link href={pathUrl.profile + profile?.username}>
                 <DropdownMenuItem className='cursor-pointer'>Profile</DropdownMenuItem>
               </Link>
               <DropdownMenuItem className='cursor-pointer'>Settings</DropdownMenuItem>

@@ -24,7 +24,6 @@ import { Icons } from '@/components/ui/icon'
 interface EditProfileDialogProps {
   isOpen: boolean
   onClose: () => void
-  onSave: (updatedUser: Partial<User>) => void
   user: User | null
 }
 
@@ -42,7 +41,7 @@ export function EditProfileDialog({ isOpen, onClose, user }: EditProfileDialogPr
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className='sm:max-w-[425px]'>
+      <DialogContent className='sm:max-w-[550px]'>
         <DialogHeader>
           <DialogTitle>Edit Profile</DialogTitle>
           <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription>
@@ -77,6 +76,7 @@ export function EditProfileDialog({ isOpen, onClose, user }: EditProfileDialogPr
                 name='bio'
                 errorMessage={errors.bio?.message}
                 defaultValue={formData.bio || ''}
+                classNameTextarea={'min-h-[100px]'}
               />
             </div>
             <div className='grid grid-cols-4 items-center gap-4'>
@@ -142,7 +142,12 @@ export function EditProfileDialog({ isOpen, onClose, user }: EditProfileDialogPr
             </div>
           </div>
           <DialogFooter>
-            <Button type='submit' disabled={isPendingUpdateProfile} isLoading={isPendingUpdateProfile}>
+            <Button
+              type='submit'
+              variant={'outline'}
+              disabled={isPendingUpdateProfile}
+              isLoading={isPendingUpdateProfile}
+            >
               Save changes
             </Button>
           </DialogFooter>

@@ -68,7 +68,13 @@ export function FormSignUp() {
           className='mt-8'
         />
       </div>
-      <Button type='submit' className='w-full' isLoading={isPendingRegister} disabled={isPendingRegister}>
+      <Button
+        type='submit'
+        className='w-full'
+        variant={'outline'}
+        isLoading={isPendingRegister}
+        disabled={isPendingRegister}
+      >
         Sign up
       </Button>
       <Link href={pathUrl.forgot_password} className='text-end font-normal hover:underline block'>

@@ -43,7 +43,10 @@ import {
   Moon,
   MoonIcon,
   Sun,
-  ArrowRight
+  ArrowRight,
+  Briefcase,
+  Bot,
+  PenSquare
 } from 'lucide-react'
 
 export const Icons = {
@@ -91,5 +94,8 @@ export const Icons = {
   moon: Moon,
   moonIcon: MoonIcon,
   sun: Sun,
-  arrowRight: ArrowRight
+  arrowRight: ArrowRight,
+  briefcase: Briefcase,
+  bot: Bot,
+  penSquare: PenSquare
 }

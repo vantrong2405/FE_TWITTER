@@ -8,24 +8,22 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Icons } from './icon'
 import type { User } from '@/app/type/user.type'
-import { formatDate, getFirstLetter } from '@/app/utils/utils'
+import { formatDate, getFirstLetter, validateUrl } from '@/app/utils/utils'
 import { EditProfileDialog } from '@/app/dashboard/home/dialog'
 
 export function UserProfile({ profile }: { profile: User | null }) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const handleSaveProfile = (updatedUser: Partial<User>) => {
-    console.log(updatedUser)
-  }
+  const coverPhotoUrl =
+    validateUrl(profile?.cover_photo ?? '') ||
+    'https://img.freepik.com/free-vector/gradient-particle-wave-background_23-2150517309.jpg'
+  const avatarUrl = validateUrl(profile?.avatar ?? '')
 
   return (
     <>
       <Card className='mb-6 overflow-hidden shadow-lg'>
         <div className='relative h-64'>
           <Image
-            src={
-              profile?.cover_photo ??
-              'https://img.freepik.com/free-vector/gradient-particle-wave-background_23-2150517309.jpg'
-            }
+            src={coverPhotoUrl}
             alt='Profile banner'
             fill
             style={{ objectFit: 'cover' }}
@@ -44,15 +42,15 @@ export function UserProfile({ profile }: { profile: User | null }) {
             <div className='flex flex-col md:flex-row md:items-end'>
               <Avatar className='h-32 w-32 border-4 border-white shadow-lg -mt-16 md:-mt-20 md:mr-6'>
                 {profile?.avatar ? (
-                  <AvatarImage src={profile.avatar} alt={profile?.name || '@johndoe'} />
+                  <AvatarImage src={avatarUrl} alt={profile?.name || '@johndoe'} />
                 ) : (
                   <AvatarFallback>{getFirstLetter(profile?.name ?? 'Anonymous')}</AvatarFallback>
                 )}
               </Avatar>
 
               <div className='mt-4 md:mt-0'>
-                <h2 className='text-3xl font-bold text-white md:text-gray-900'>{profile?.name ?? ''}</h2>
-                <p className='text-gray-300 md:text-gray-500'>@{profile?.username ?? ''}</p>
+                <h2 className='text-3xl font-bold '>{profile?.name ?? ''}</h2>
+                <p className=''>@{profile?.username ?? ''}</p>
               </div>
             </div>
             <Button variant='outline' onClick={() => setIsEditDialogOpen(true)} className='mt-4 md:mt-0'>
@@ -64,8 +62,8 @@ export function UserProfile({ profile }: { profile: User | null }) {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <p className='mt-6 text-gray-600'>{profile?.bio ?? ''}</p>
-            <div className='mt-4 flex flex-wrap gap-4 text-sm text-gray-500'>
+            <p className='mt-6 '>{profile?.bio ?? ''}</p>
+            <div className='mt-4 flex flex-wrap gap-4 text-sm'>
               <span className='flex items-center'>
                 <Icons.mapPin className='mr-2 h-4 w-4' />
                 {profile?.location ?? ''}
@@ -83,21 +81,16 @@ export function UserProfile({ profile }: { profile: User | null }) {
             </div>
             <div className='mt-6 flex space-x-6'>
               <span className='font-semibold'>
-                1,234 <span className='font-normal text-gray-500'>Following</span>
+                1,234 <span className='font-normal'>Following</span>
               </span>
               <span className='font-semibold'>
-                5,678 <span className='font-normal text-gray-500'>Followers</span>
+                5,678 <span className='font-normal'>Followers</span>
               </span>
             </div>
           </motion.div>
         </CardContent>
       </Card>
-      <EditProfileDialog
-        isOpen={isEditDialogOpen}
-        onClose={() => setIsEditDialogOpen(false)}
-        onSave={handleSaveProfile}
-        user={profile}
-      />
+      <EditProfileDialog isOpen={isEditDialogOpen} onClose={() => setIsEditDialogOpen(false)} user={profile} />
     </>
   )
 }

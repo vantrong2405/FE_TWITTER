@@ -46,7 +46,7 @@ export function FormSignIn() {
           errorMessage={errors.password?.message}
         />
       </div>
-      <Button type='submit' className='w-full' isLoading={isPendingLogin} disabled={isPendingLogin}>
+      <Button type='submit' className='w-full' variant={'outline'} isLoading={isPendingLogin} disabled={isPendingLogin}>
         Sign In
       </Button>
       <Link href={pathUrl.forgot_password} className='text-end font-normal hover:underline block'>

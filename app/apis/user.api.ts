@@ -10,5 +10,8 @@ export const userApi = {
   },
   updateProfile(body: IValidateUpdateProfile) {
     return http.patch('/users/me', body)
+  },
+  getProfile(username: string) {
+    return http.get(`/users/${username}`)
   }
 }

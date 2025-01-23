@@ -18,7 +18,7 @@ export default function ResetPassword() {
   const onSubmit = handleSubmit((data) => mutateResetPassword({ ...data, forgot_password_token: token }))
 
   return (
-    <div className='flex items-center justify-center min-h-screen bg-gray-100'>
+    <div className='flex items-center justify-center min-h-screen'>
       <Card className='w-full max-w-md'>
         <CardHeader>
           <CardTitle className='text-xl font-bold text-center text-blue-500'>

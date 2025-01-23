@@ -64,13 +64,13 @@ export function TweetList() {
               <div className='flex-grow'>
                 <div className='flex items-center space-x-2'>
                   <span className='font-bold hover:underline cursor-pointer'>{tweet.user.name}</span>
-                  <span className='text-gray-500'>{tweet.user.handle}</span>
-                  <span className='text-gray-500'>·</span>
-                  <span className='text-gray-500 hover:underline cursor-pointer'>
+                  <span>{tweet.user.handle}</span>
+                  <span>·</span>
+                  <span className='hover:underline cursor-pointer'>
                     {formatDistanceToNow(tweet.timestamp, { addSuffix: true })}
                   </span>
                 </div>
-                <p className='mt-2 text-gray-900 whitespace-pre-wrap'>{tweet.content}</p>
+                <p className='mt-2 whitespace-pre-wrap'>{tweet.content}</p>
                 <div className='mt-2 rounded-lg overflow-hidden'>
                   <img
                     src={
@@ -80,7 +80,7 @@ export function TweetList() {
                     className='w-full h-auto'
                   />
                 </div>
-                <div className='flex justify-between mt-4 text-gray-500'>
+                <div className='flex justify-between mt-4 '>
                   <Button variant='ghost' size='sm' className='hover:text-blue-500 hover:bg-blue-50 '>
                     <Icons.messageCircle className='h-4 w-4 mr-1' />
                     {tweet.replies}

@@ -12,6 +12,8 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useChangePassword } from '@/app/hook/auth/useChangePassword'
+import { useChangePasswordFormSchema } from '@/app/schemas/changePassword.schema'
 
 interface ChangePasswordDialogProps {
   open: boolean
@@ -19,70 +21,70 @@ interface ChangePasswordDialogProps {
 }
 
 export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialogProps) {
-  const [currentPassword, setCurrentPassword] = useState('')
-  const [newPassword, setNewPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Here you would typically send a request to your backend to change the password
-    console.log('Password change submitted')
-    onOpenChange(false)
-  }
+  const { register, handleSubmit, errors } = useChangePasswordFormSchema()
+  const { mutateChangePassword, isPendingChangePassword } = useChangePassword(onOpenChange)
+  const onSubmit = handleSubmit((data) => mutateChangePassword(data))
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='sm:max-w-[425px]'>
+      <DialogContent className='sm:max-w-[570px]'>
         <DialogHeader>
           <DialogTitle>Change Password</DialogTitle>
           <DialogDescription>
             Enter your current password and a new password to change your account password.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={onSubmit}>
           <div className='grid gap-4 py-4'>
             <div className='grid grid-cols-4 items-center gap-4'>
               <Label htmlFor='current-password' className='text-right'>
-                Current
+                Current Password
               </Label>
               <Input
-                id='current-password'
                 type='password'
                 className='col-span-3'
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                required
+                placeholder='enter your old password'
+                register={register}
+                name='old_password'
+                errorMessage={errors.old_password?.message}
               />
             </div>
             <div className='grid grid-cols-4 items-center gap-4'>
               <Label htmlFor='new-password' className='text-right'>
-                New
+                New Password
               </Label>
               <Input
-                id='new-password'
                 type='password'
                 className='col-span-3'
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                required
+                placeholder='enter your new password'
+                register={register}
+                name='new_password'
+                errorMessage={errors.new_password?.message}
               />
             </div>
             <div className='grid grid-cols-4 items-center gap-4'>
               <Label htmlFor='confirm-password' className='text-right'>
-                Confirm
+                Confirm Password
               </Label>
               <Input
-                id='confirm-password'
                 type='password'
                 className='col-span-3'
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
+                placeholder='enter your confirm password'
+                register={register}
+                name='confirm_new_password'
+                errorMessage={errors.confirm_new_password?.message}
               />
             </div>
           </div>
           <DialogFooter>
-            <Button type='submit'>Change Password</Button>
+            <Button
+              type='submit'
+              variant={'outline'}
+              disabled={isPendingChangePassword}
+              isLoading={isPendingChangePassword}
+            >
+              Change Password
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

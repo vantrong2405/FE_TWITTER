@@ -1,4 +1,5 @@
 export const queryKey = {
-  profile: 'profile',
-  friends: 'friends'
+  me: 'me',
+  friends: 'friends',
+  profile: 'profile'
 }

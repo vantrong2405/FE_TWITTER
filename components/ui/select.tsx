@@ -33,7 +33,6 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
     },
     ref
   ) => {
-    // Tích hợp React Hook Form
     const registerResult = register && name ? register(name, rules) : {}
 
     return (

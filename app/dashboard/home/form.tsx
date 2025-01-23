@@ -15,7 +15,8 @@ import { ChatContainer } from '@/components/ui/ChatContainer'
 import { useStoreLocal } from '@/app/store/useStoreLocal'
 import { useLogout } from '@/app/hook/auth/useLogout'
 import { useFollowFriend } from '@/app/hook/friends/useFollowFriend'
-import { useProfile } from '@/app/hook/user/usegetProfile'
+import { useGetMe } from '@/app/hook/user/useGetMe'
+import { useGetFriends } from '@/app/hook/friends/useGetFriends'
 
 export default function FormDashBoard() {
   // state
@@ -23,9 +24,9 @@ export default function FormDashBoard() {
   // store local
   const { addChat } = useStoreLocal()
   // useQuery
-  // const { data: friends } = useGetFriends()
+  const { data: friends } = useGetFriends()
   // hook
-  const { data: profile } = useProfile()
+  const { data: profile } = useGetMe()
   const { mutateLogout, isPendingLogout } = useLogout({ setIsLogin })
   const { mutateFollowFriend, isPendingFollowFriend } = useFollowFriend()
   // useEffect
@@ -37,12 +38,12 @@ export default function FormDashBoard() {
   }, [isLogin])
 
   return (
-    <div className='min-h-screen bg-gray-50'>
+    <div className='min-h-screen '>
       <Header profile={profile} mutateLogout={mutateLogout} isPendingLogout={isPendingLogout} />
       <div className='container mx-auto px-4 py-8 flex flex-col lg:flex-row gap-6'>
         <div className='hidden lg:block lg:w-1/4'>
           <div className='sticky top-20'>
-            <Sidebar />
+            <Sidebar profile={profile} />
           </div>
         </div>
         <main className='flex-grow max-w-2xl w-full mx-auto lg:ml-1/4'>
@@ -55,7 +56,7 @@ export default function FormDashBoard() {
           <div className='sticky top-20 space-y-6'>
             <TrendingTopics />
             <WhoToFollow
-              friends={[]}
+              friends={friends?.data?.result}
               addChat={addChat}
               mutateFollowFriend={mutateFollowFriend}
               isPendingFollowFriend={isPendingFollowFriend}
