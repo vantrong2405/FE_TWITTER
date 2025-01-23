@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import AuthGuard from './guard-layout'
 import { Suspense } from 'react'
 import { ThemeProvider } from '@/components/theme-provider'
+;<meta name='format-detection' content='telephone=no, date=no, email=no, address=no' />
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -34,7 +35,9 @@ export default function RootLayout({
           <Suspense>
             <AuthGuard>
               <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
-                {children}
+                <div className='text-black dark:text-white dark:bg-black min-h-screen transition-colors duration-300'>
+                  {children}
+                </div>
               </ThemeProvider>
             </AuthGuard>
           </Suspense>

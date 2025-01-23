@@ -19,7 +19,7 @@ export default function ForgotPasswordPage() {
   const onSubmit = handleSubmit((data) => mutateForgotPassword(data))
 
   return (
-    <div className='min-h-screen bg-gradient-to-b from-blue-100 to-white  flex items-center justify-center p-4'>
+    <div className='min-h-screen flex items-center justify-center p-4'>
       <Card className='w-full max-w-md'>
         <CardHeader className='space-y-1'>
           <div className='flex justify-center mb-4'>
@@ -37,13 +37,13 @@ export default function ForgotPasswordPage() {
                 <Input
                   type='email'
                   className='mt-8'
-                  placeholder='enter your email'
+                  placeholder='Enter your email'
                   register={register}
                   name='email'
                   errorMessage={errors.email?.message}
                 />
               </div>
-              <Button type='submit' className='w-full' disabled={isLoading}>
+              <Button type='submit' className='w-full' variant={'outline'} disabled={isLoading}>
                 {isLoading && <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />}
                 Send Reset Link
               </Button>

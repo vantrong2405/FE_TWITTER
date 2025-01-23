@@ -1,6 +1,6 @@
 import React from 'react'
-import HomePage from './dashboard/home/page'
+import GetStarted from './form'
 
 export default function page() {
-  return <HomePage />
+  return <GetStarted />
 }

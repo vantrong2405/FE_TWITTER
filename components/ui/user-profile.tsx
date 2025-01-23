@@ -1,57 +1,96 @@
+'use client'
+
+import { useState } from 'react'
+import Image from 'next/image'
+import { motion } from 'framer-motion'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Icons } from './icon'
-import { User } from '@/app/type/user.type'
-import { formatDate, getFirstLetter } from '@/app/utils/utils'
+import type { User } from '@/app/type/user.type'
+import { formatDate, getFirstLetter, validateUrl } from '@/app/utils/utils'
+import { EditProfileDialog } from '@/app/dashboard/home/dialog'
 
 export function UserProfile({ profile }: { profile: User | null }) {
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+  const coverPhotoUrl =
+    validateUrl(profile?.cover_photo ?? '') ||
+    'https://img.freepik.com/free-vector/gradient-particle-wave-background_23-2150517309.jpg'
+  const avatarUrl = validateUrl(profile?.avatar ?? '')
+
   return (
-    <Card className='mb-6 overflow-hidden'>
-      <div className='h-32 bg-gradient-to-r from-blue-400 to-purple-500'></div>
-      <CardHeader className='relative'>
-        <Avatar className='absolute -top-16 left-4 h-32 w-32 border-4 border-white '>
-          <AvatarImage
-            src='https://png.pngtree.com/png-vector/20190811/ourlarge/pngtree-baby-animal-cute-panda-smile-png-image_1687512.jpg'
-            alt='@johndoe'
+    <>
+      <Card className='mb-6 overflow-hidden shadow-lg'>
+        <div className='relative h-64'>
+          <Image
+            src={coverPhotoUrl}
+            alt='Profile banner'
+            fill
+            style={{ objectFit: 'cover' }}
+            className='transition-opacity duration-300 ease-in-out'
           />
-          <AvatarFallback>{getFirstLetter(profile?.name ?? '')}</AvatarFallback>
-        </Avatar>
-        <div className='flex justify-end'>
-          <Button variant='outline'>Edit Profile</Button>
+
+          <div className='absolute inset-0 bg-gradient-to-t from-black/60 to-transparent' />
         </div>
-      </CardHeader>
-      <CardContent>
-        <div className='mb-4'>
-          <h2 className='text-2xl font-bold'>{profile?.name ?? ''}</h2>
-          <p className='text-gray-500 '>@{profile?.username ?? ''}</p>
-        </div>
-        <p className='mb-4'>{profile?.bio ?? ''}</p>
-        <div className='flex space-x-4 text-sm text-gray-500  mb-4'>
-          <span className='flex items-center'>
-            <Icons.mapPin className='mr-1 h-4 w-4' />
-            {profile?.address ?? ''}
-          </span>
-          <span className='flex items-center'>
-            <Icons.link className='mr-1 h-4 w-4' />
-            <a href='#' className='hover:underline'>
-              {profile?.website ?? ''}
-            </a>
-          </span>
-          <span className='flex items-center'>
-            <Icons.calendar className='mr-1 h-4 w-4' />
-            {formatDate(profile?.date_of_birth ?? '')}
-          </span>
-        </div>
-        <div className='flex space-x-4'>
-          <span className='font-semibold'>
-            1,234 <span className='font-normal text-gray-500 '>Following</span>
-          </span>
-          <span className='font-semibold'>
-            5,678 <span className='font-normal text-gray-500 '>Followers</span>
-          </span>
-        </div>
-      </CardContent>
-    </Card>
+        <CardContent className='relative px-6 pb-6'>
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className='flex flex-col md:flex-row md:items-end md:justify-between'
+          >
+            <div className='flex flex-col md:flex-row md:items-end'>
+              <Avatar className='h-32 w-32 border-4 border-white shadow-lg -mt-16 md:-mt-20 md:mr-6'>
+                {profile?.avatar ? (
+                  <AvatarImage src={avatarUrl} alt={profile?.name || '@johndoe'} />
+                ) : (
+                  <AvatarFallback>{getFirstLetter(profile?.name ?? 'Anonymous')}</AvatarFallback>
+                )}
+              </Avatar>
+
+              <div className='mt-4 md:mt-0'>
+                <h2 className='text-3xl font-bold '>{profile?.name ?? ''}</h2>
+                <p className=''>@{profile?.username ?? ''}</p>
+              </div>
+            </div>
+            <Button variant='outline' onClick={() => setIsEditDialogOpen(true)} className='mt-4 md:mt-0'>
+              Edit Profile
+            </Button>
+          </motion.div>
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <p className='mt-6 '>{profile?.bio ?? ''}</p>
+            <div className='mt-4 flex flex-wrap gap-4 text-sm'>
+              <span className='flex items-center'>
+                <Icons.mapPin className='mr-2 h-4 w-4' />
+                {profile?.location ?? ''}
+              </span>
+              <span className='flex items-center'>
+                <Icons.link className='mr-2 h-4 w-4' />
+                <a href={profile?.website} className='hover:text-blue-500 hover:underline transition-colors'>
+                  {profile?.website ?? ''}
+                </a>
+              </span>
+              <span className='flex items-center'>
+                <Icons.calendar className='mr-2 h-4 w-4' />
+                {formatDate(profile?.date_of_birth ?? '')}
+              </span>
+            </div>
+            <div className='mt-6 flex space-x-6'>
+              <span className='font-semibold'>
+                1,234 <span className='font-normal'>Following</span>
+              </span>
+              <span className='font-semibold'>
+                5,678 <span className='font-normal'>Followers</span>
+              </span>
+            </div>
+          </motion.div>
+        </CardContent>
+      </Card>
+      <EditProfileDialog isOpen={isEditDialogOpen} onClose={() => setIsEditDialogOpen(false)} user={profile} />
+    </>
   )
 }

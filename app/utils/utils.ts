@@ -73,3 +73,11 @@ export function formatDate(date: Date | undefined | string): string {
     return ''
   }
 }
+
+export const validateUrl = (url: string): string => {
+  try {
+    return new URL(url).toString()
+  } catch {
+    return ''
+  }
+}

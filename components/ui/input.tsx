@@ -2,6 +2,7 @@ import { cn } from '@/app/utils/utils'
 import * as React from 'react'
 import { InputHTMLAttributes } from 'react'
 import type { UseFormRegister, RegisterOptions } from 'react-hook-form'
+
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   errorMessage?: string
   classNameInput?: string
@@ -20,8 +21,8 @@ const Input = React.forwardRef<HTMLInputElement, Props>(
       errorMessage,
       classNameInput,
       name,
-      value,
       required,
+      defaultValue, // Sử dụng defaultValue thay vì value
       ...props
     },
     ref
@@ -37,13 +38,15 @@ const Input = React.forwardRef<HTMLInputElement, Props>(
             classNameInput
           )}
           ref={ref}
-          value={value}
-          onChange={onChange}
-          required={required}
-          {...registerResult}
+          defaultValue={defaultValue}
+          {...(registerResult && {
+            onChange,
+            required,
+            ...registerResult
+          })}
           {...props}
         />
-        {errorMessage && <div className={`text-red-500 text-sm`}>{errorMessage}</div>}
+        {errorMessage && registerResult && <div className='text-red-500 text-sm'>{errorMessage}</div>}
       </div>
     )
   }

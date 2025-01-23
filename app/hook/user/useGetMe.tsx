@@ -4,12 +4,18 @@ import { useStoreLocal } from '@/app/store/useStoreLocal'
 import { userApi } from '@/app/apis/user.api'
 import { queryKey } from '@/app/constant/query-key'
 
-export function useGetProfile(username: string) {
+export function useGetMe() {
+  const { setProfile } = useStoreLocal()
   const { data, refetch, isLoading, error } = useQuery({
-    queryKey: [queryKey.profile],
+    queryKey: [queryKey.me],
     queryFn: async () => {
-      const response = await userApi.getProfile(username)
-      return response.data
+      const response = await userApi.getMe()
+      if (response?.data?.result) {
+        setProfileToLS(response.data.result)
+        setProfile(response.data.result)
+        return response.data.result
+      }
+      return response
     }
   })
 

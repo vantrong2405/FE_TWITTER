@@ -4,12 +4,12 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { ArrowRight } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import imgTweet from '../../assets/images/twitter.png'
 import { useResetPasswordFormSchema } from '@/app/schemas/resetPassword.schema'
 import { useResetPassword } from '@/app/hook/auth/useResetPassword'
+import { Icons } from '@/components/ui/icon'
 export default function ResetPassword() {
   const { register, handleSubmit, errors } = useResetPasswordFormSchema()
   const searchParams = useSearchParams()
@@ -18,7 +18,7 @@ export default function ResetPassword() {
   const onSubmit = handleSubmit((data) => mutateResetPassword({ ...data, forgot_password_token: token }))
 
   return (
-    <div className='flex items-center justify-center min-h-screen bg-gray-100'>
+    <div className='flex items-center justify-center min-h-screen'>
       <Card className='w-full max-w-md'>
         <CardHeader>
           <CardTitle className='text-xl font-bold text-center text-blue-500'>
@@ -62,7 +62,7 @@ export default function ResetPassword() {
               disabled={isPendingResetPassword}
             >
               Reset password
-              <ArrowRight className='ml-2' size={18} />
+              <Icons.arrowRight className='ml-2' size={18} />
             </Button>
           </CardFooter>
         </form>
