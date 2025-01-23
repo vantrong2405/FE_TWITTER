@@ -38,23 +38,24 @@ export function TweetComposer() {
               value={tweet}
               onChange={(e) => setTweet(e.target.value)}
               className='flex-grow min-h-[100px] text-lg resize-none'
+              classNameTextarea={'min-h-[90px]'}
             />
           </div>
           <div className='flex justify-between items-center'>
             <div className='flex space-x-2'>
-              <Button type='button' size='sm' variant='ghost'>
+              <Button type='button' size='sm' variant='outline'>
                 <Icons.image className='h-5 w-5 text-blue-500' />
               </Button>
-              <Button type='button' size='sm' variant='ghost'>
+              <Button type='button' size='sm' variant='outline'>
                 <Icons.smile className='h-5 w-5 text-blue-500' />
               </Button>
-              <Button type='button' size='sm' variant='ghost'>
+              <Button type='button' size='sm' variant='outline'>
                 <Icons.mapPin className='h-5 w-5 text-blue-500' />
               </Button>
             </div>
             <div className='flex items-center space-x-4'>
               <div className='text-sm text-gray-500'>{tweet.length}/280</div>
-              <Button type='submit' disabled={tweet.trim().length === 0 || isLoading}>
+              <Button type='submit' disabled={tweet.trim().length === 0 || isLoading} variant='blueCol'>
                 {isLoading ? (
                   <>
                     <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />

@@ -1,15 +1,18 @@
 'use client'
 
-import { FormEvent, useEffect, useState } from 'react'
+import { type FormEvent, useEffect, useState, useRef } from 'react'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getAccessTokenFromLS } from '@/app/utils/utils'
 import socket from '@/app/utils/socket'
-import { Button } from '../ui/button'
-import { SendHorizontal } from 'lucide-react'
-import { Input } from '../ui/input'
-import { User } from '@/app/type/user.type'
+import { Button } from '@/components/ui/button'
+import { SendHorizontal, X, MoreVertical, Phone, Video } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import type { User } from '@/app/type/user.type'
 import { useStoreLocal } from '@/app/store/useStoreLocal'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 const LIMIT = 10
 const PAGE = 1
@@ -19,23 +22,22 @@ type ChatBoxProps = {
   onClose: () => void
 }
 
-export default function ChatBoxReal({ receiver, onClose }: ChatBoxProps) {
+export default function ChatBox({ receiver, onClose }: ChatBoxProps) {
   const { profile } = useStoreLocal()
-  const accessToken = getAccessTokenFromLS() // Lấy access token
+  const accessToken = getAccessTokenFromLS()
   const [value, setValue] = useState('')
   const [conversations, setConversations] = useState<
-    { _id: string; content: string; sender_id: string; receiver_id: string }[]
+    { _id: string; content: string; sender_id: string; receiver_id: string; timestamp: Date }[]
   >([])
   const [pagination, setPagination] = useState({ page: PAGE, total_page: 0 })
+  const scrollAreaRef = useRef<HTMLDivElement>(null)
 
-  // Lọc tin nhắn liên quan đến người dùng hiện tại và người nhận
   const relevantMessages = conversations.filter(
     (message) =>
       (message.sender_id === profile?._id && message.receiver_id === receiver._id) ||
       (message.sender_id === receiver._id && message.receiver_id === profile?._id)
   )
 
-  // Gửi tin nhắn
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     if (!value.trim()) return
@@ -43,7 +45,8 @@ export default function ChatBoxReal({ receiver, onClose }: ChatBoxProps) {
     const conversation = {
       content: value,
       sender_id: profile?._id ?? '',
-      receiver_id: receiver?._id ?? ''
+      receiver_id: receiver?._id ?? '',
+      timestamp: new Date()
     }
 
     socket.emit('send_message', { payload: conversation })
@@ -51,7 +54,7 @@ export default function ChatBoxReal({ receiver, onClose }: ChatBoxProps) {
     setConversations((prev) => [
       {
         ...conversation,
-        _id: new Date().getTime().toString() // ID tạm để hiển thị ngay
+        _id: new Date().getTime().toString()
       },
       ...prev
     ])
@@ -59,7 +62,6 @@ export default function ChatBoxReal({ receiver, onClose }: ChatBoxProps) {
     setValue('')
   }
 
-  // Kết nối socket và xử lý sự kiện
   useEffect(() => {
     if (!accessToken) {
       console.error('Access token is missing')
@@ -92,7 +94,6 @@ export default function ChatBoxReal({ receiver, onClose }: ChatBoxProps) {
     }
   }, [accessToken, receiver])
 
-  // Lấy danh sách tin nhắn từ API khi receiver thay đổi
   useEffect(() => {
     if (receiver?._id) {
       axios
@@ -114,56 +115,111 @@ export default function ChatBoxReal({ receiver, onClose }: ChatBoxProps) {
     }
   }, [receiver])
 
+  useEffect(() => {
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
+    }
+  }, [conversations])
+
   return (
-    <div className='relative flex flex-col w-[350px] h-[450px] max-w-md mx-auto border border-gray-200 shadow-lg rounded-lg bg-white'>
+    <div className='flex flex-col w-[350px] h-[500px]  rounded-lg shadow-xl overflow-hidden z-50 border bg-white dark:bg-black'>
       {/* Header */}
-      <div className='flex items-center justify-between p-4 border-b'>
-        <div className='flex items-center'>
-          {receiver?.avatar ? (
-            <img className='w-10 h-10 rounded-full' src={receiver.avatar} alt={receiver.name || 'User avatar'} />
-          ) : (
-            <div className='w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center'>
-              <span className='text-gray-500 text-sm font-bold'>{receiver?.name?.charAt(0).toUpperCase() || '?'}</span>
-            </div>
-          )}
-          <div className='ml-4'>
-            <p className='text-sm font-medium'>{receiver?.name || 'Unknown User'}</p>
-            <p className='text-xs text-gray-500'>{receiver?.email || 'No email provided'}</p>
+      <div className='flex items-center justify-between p-4  border-b'>
+        <div className='flex items-center space-x-3'>
+          <Avatar className='h-10 w-10'>
+            <AvatarImage src={receiver.avatar} alt={receiver.name || 'User'} />
+            <AvatarFallback>{receiver.name?.charAt(0).toUpperCase() || '?'}</AvatarFallback>
+          </Avatar>
+          <div>
+            <h3 className='font-semibold '>{receiver.name || 'Unknown User'}</h3>
+            <p className='text-xs '>@{receiver.username || ''}</p>
           </div>
         </div>
-        <button onClick={onClose} className='text-gray-500 hover:text-red-500 focus:outline-none'>
-          X
-        </button>
+        <div className='flex items-center space-x-2'>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant='ghost' size='icon' className=''>
+                  <Phone className='h-5 w-5' />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Voice call</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant='ghost' size='icon' className=''>
+                  <Video className='h-5 w-5' />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Video call</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant='ghost' size='icon' className=''>
+                  <MoreVertical className='h-5 w-5' />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>More options</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant='ghost' size='icon' className='' onClick={onClose}>
+                  <X className='h-5 w-5' />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Close chat</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
       </div>
 
-      {/* Nội dung chat */}
-      <div className='flex-1 overflow-auto p-4'>
-        {relevantMessages.map((message, index) => (
-          <div
-            key={index}
-            className={`flex mb-4 ${message.sender_id === profile?._id ? 'justify-end' : 'justify-start'}`}
-          >
-            <div
-              className={`rounded-lg px-4 py-2 max-w-[80%] ${
-                message.sender_id === profile?._id ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-900'
-              }`}
-            >
-              <p className='text-sm'>{message.content}</p>
+      {/* Chat content */}
+      <ScrollArea className='flex-1 p-4' ref={scrollAreaRef}>
+        <div className='space-y-4'>
+          {relevantMessages.map((message, index) => (
+            <div key={index} className={`flex ${message.sender_id === profile?._id ? 'justify-end' : 'justify-start'}`}>
+              <div
+                className={`rounded-lg px-4 py-2 max-w-[80%] ${
+                  message.sender_id === profile?._id ? 'bg-blue-500' : ' text-gray-900'
+                }`}
+              >
+                <p className='text-sm'>{message.content}</p>
+                <p className='text-xs mt-1 opacity-70'>
+                  {new Date(message.timestamp).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      </ScrollArea>
 
       {/* Input Box */}
-      <form onSubmit={handleSubmit} className='flex items-center p-4 border-t'>
+      <form onSubmit={handleSubmit} className='flex items-center p-4  border-t'>
         <Input
-          className='mr-2 flex-1'
+          className='flex-1 '
           placeholder='Type your message...'
           value={value}
           onChange={(e) => setValue(e.target.value)}
         />
-        <Button className='ml-2 w-10 h-10' type='submit'>
-          <SendHorizontal size={15} strokeWidth={2} />
+        <Button className='ml-2' type='submit' variant={'outline'}>
+          <SendHorizontal className='h-5 w-5' />
         </Button>
       </form>
     </div>

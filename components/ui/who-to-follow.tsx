@@ -23,6 +23,7 @@ export function WhoToFollow({
   mutateFollowFriend: UseMutateFunction<AxiosResponse<any, any>, Error, IFollowFriend, unknown>
   isPendingFollowFriend: boolean
 }) {
+  console.log('🚀 ~ friends:', friends)
   const handleSubmit = (followed_user_id: IFollowFriend) => {
     mutateFollowFriend(followed_user_id)
   }

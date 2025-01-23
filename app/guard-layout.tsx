@@ -21,7 +21,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
       redirect(pathUrl.home)
     }
     const token = getAccessTokenFromLS()
-    if (!token && !pathname.startsWith('/auth/') && pathname !== pathUrl.login_register) {
+    if (!token && !pathname.startsWith('/auth/') && pathname !== pathUrl.login_register && pathname !== '/') {
       redirect(pathUrl.login_register)
     } else if (token && pathname === pathUrl.login_register) {
       redirect(pathUrl.home)
