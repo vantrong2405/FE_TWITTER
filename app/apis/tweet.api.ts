@@ -1,4 +1,4 @@
-import httpService from '@/lib/https'
+import http from '@/lib/https'
 
 export const tweetApi = {
   createTweet(body: {
@@ -10,10 +10,10 @@ export const tweetApi = {
     mentions: string[]
     medias: { url: string; type: number }[]
   }) {
-    return httpService.post(`/tweet/`, body)
+    return http.post(`/tweet/`, body)
   },
   getTweets(limit: number, page: number) {
-    return httpService.get(`/tweet/`, {
+    return http.get(`/tweet/`, {
       params: {
         limit,
         page
@@ -21,12 +21,12 @@ export const tweetApi = {
     })
   },
   deleteTweet(tweet_id: string) {
-    return httpService.delete(`/tweet/${tweet_id}`)
+    return http.delete(`/tweet/${tweet_id}`)
   },
   likeTweet(body: { tweet_id: string }) {
-    return httpService.post('/likes/tweet/', body)
+    return http.post('/likes/tweet/', body)
   },
   unlikeTweet(tweet_id: string) {
-    return httpService.delete(`/likes/tweet/${tweet_id}`)
+    return http.delete(`/likes/tweet/${tweet_id}`)
   }
 }

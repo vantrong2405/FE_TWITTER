@@ -1,5 +1,3 @@
-import { IBaseResponseData } from './other.i'
-
 export interface User {
   _id: string
   roles: 'User' | 'Admin'[]
@@ -20,5 +18,3 @@ export interface User {
   username: string
   cover_photo: string
 }
-
-export type IUserGetMeResponse = IBaseResponseData<User>
