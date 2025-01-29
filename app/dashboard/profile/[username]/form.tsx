@@ -10,10 +10,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ChangePasswordDialog } from './dialog'
 import { Icons } from '@/components/ui/icon'
 import { useParams } from 'next/navigation'
-import { useGetProfile } from '@/app/hook/user/useGetProfile'
 import { useStoreLocal } from '@/app/store/useStoreLocal'
 import { EditProfileDialog } from '../../home/dialog'
 import { getFirstLetter, validateUrl } from '@/app/utils/utils'
+import { useGetProfile } from '@/app/hook/user/usegetProfile'
 
 export default function ProfilePage() {
   const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false)
@@ -33,7 +33,7 @@ export default function ProfilePage() {
         <CardContent className='p-0'>
           {/* Cover Photo */}
           <div className='relative h-48 sm:h-64 overflow-hidden rounded-t-lg'>
-            <Image src={coverPhotoUrl} alt='Profile cover' className='object-cover' fill />
+            <Image src={coverPhotoUrl} priority alt='Profile cover' className='object-cover' fill />
             {isOwner && (
               <Button size='icon' variant='secondary' className='absolute top-4 right-4 rounded-full'>
                 <Icons.camera className='h-4 w-4' />
@@ -155,6 +155,7 @@ export default function ProfilePage() {
                   alt={`Media ${media}`}
                   fill
                   className='object-cover'
+                  priority
                 />
               </div>
             ))}

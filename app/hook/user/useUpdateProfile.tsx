@@ -11,7 +11,7 @@ export function useUpdateProfile(onclose: () => void) {
     },
     onSuccess: (data) => {
       onclose()
-      queryClient.invalidateQueries({ queryKey: [queryKey.profile], exact: true })
+      queryClient.invalidateQueries({ queryKey: [queryKey.ME] })
     },
     onError: (error) => {}
   })

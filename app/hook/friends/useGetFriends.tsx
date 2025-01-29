@@ -4,7 +4,7 @@ import { queryKey } from '@/app/constant/query-key'
 
 export function useGetFriends() {
   const { data, refetch, isLoading, error } = useQuery({
-    queryKey: [queryKey.friends],
+    queryKey: [queryKey.FRIENDS],
     queryFn: friendApi.getFriend
   })
 

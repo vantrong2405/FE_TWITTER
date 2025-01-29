@@ -1,4 +1,4 @@
-import http from '../../lib/http'
+import http from '@/lib/https'
 
 const authApi = {
   registerAccount(body: { name: string; email: string; password: string }) {

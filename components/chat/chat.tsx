@@ -13,6 +13,7 @@ import { useStoreLocal } from '@/app/store/useStoreLocal'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import configProject from '@/app/config/configService'
 
 const LIMIT = 10
 const PAGE = 1
@@ -98,7 +99,7 @@ export default function ChatBox({ receiver, onClose }: ChatBoxProps) {
     if (receiver?._id) {
       axios
         .get(`/conversations/receiver/${receiver._id}`, {
-          baseURL: process.env.VITE_API_URL,
+          baseURL: configProject.NEXT_PUBLIC_VITE_API_URL,
           headers: {
             Authorization: `Bearer ${localStorage.getItem('access_token')}`
           },

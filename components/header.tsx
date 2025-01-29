@@ -13,24 +13,16 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Icons } from './ui/icon'
-import { User } from '@/app/type/user.type'
 import { getFirstLetter, getRefreshTokenFromLS } from '@/app/utils/utils'
 import { ModeToggle } from './ui/toggle'
-import { IValidateLogout } from '@/app/schemas/logout.schema'
-import { AxiosResponse } from 'axios'
-import { UseMutateFunction } from '@tanstack/react-query'
 import Link from 'next/link'
 import { pathUrl } from '@/app/constant/path'
+import { useLogout } from '@/app/hook/auth/useLogout'
+import { useStoreLocal } from '@/app/store/useStoreLocal'
 
-export function Header({
-  profile,
-  mutateLogout,
-  isPendingLogout
-}: {
-  profile: User | null
-  mutateLogout: UseMutateFunction<AxiosResponse<any, any>, Error, IValidateLogout, unknown>
-  isPendingLogout: boolean
-}) {
+export function Header() {
+  const { profile } = useStoreLocal()
+  const { mutateLogout, isPendingLogout } = useLogout()
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const handleSubmit = () => {
     const refresh_token = getRefreshTokenFromLS() || ''
@@ -38,7 +30,7 @@ export function Header({
   }
 
   return (
-    <header className='shadow-sm sticky top-0 z-10'>
+    <header className='shadow-sm sticky top-0 z-20 bg-background'>
       <div className='container mx-auto px-4 py-3 flex items-center justify-between'>
         <div className='flex items-center space-x-4'>
           <Icons.twitter className='h-8 w-8 text-blue-500' />

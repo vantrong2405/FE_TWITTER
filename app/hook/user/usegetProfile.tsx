@@ -6,7 +6,7 @@ import { queryKey } from '@/app/constant/query-key'
 
 export function useGetProfile(username: string) {
   const { data, refetch, isLoading, error } = useQuery({
-    queryKey: [queryKey.profile],
+    queryKey: [queryKey.PROFILE],
     queryFn: async () => {
       const response = await userApi.getProfile(username)
       return response.data

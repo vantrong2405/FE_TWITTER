@@ -1,5 +1,7 @@
 export const queryKey = {
-  me: 'me',
-  friends: 'friends',
-  profile: 'profile'
+  LOGOUT: 'auth/logout',
+  ME: 'me',
+  FRIENDS: 'friends',
+  PROFILE: 'profile',
+  TWEETS: 'tweets'
 }

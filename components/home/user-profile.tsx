@@ -6,8 +6,8 @@ import { motion } from 'framer-motion'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Icons } from './icon'
-import type { User } from '@/app/type/user.type'
+import { Icons } from '../ui/icon'
+import type { User } from '@/app/types/user.i'
 import { formatDate, getFirstLetter, validateUrl } from '@/app/utils/utils'
 import { EditProfileDialog } from '@/app/dashboard/home/dialog'
 
@@ -23,11 +23,13 @@ export function UserProfile({ profile }: { profile: User | null }) {
       <Card className='mb-6 overflow-hidden shadow-lg'>
         <div className='relative h-64'>
           <Image
+            priority
             src={coverPhotoUrl}
             alt='Profile banner'
             fill
             style={{ objectFit: 'cover' }}
             className='transition-opacity duration-300 ease-in-out'
+            sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
           />
 
           <div className='absolute inset-0 bg-gradient-to-t from-black/60 to-transparent' />

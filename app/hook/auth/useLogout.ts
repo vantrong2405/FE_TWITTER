@@ -5,7 +5,7 @@ import { getRefreshTokenFromLS, clearLS, handleError } from '@/app/utils/utils'
 import { useMutation } from '@tanstack/react-query'
 import { Dispatch, SetStateAction } from 'react'
 
-export function useLogout({ setIsLogin }: { setIsLogin: Dispatch<SetStateAction<boolean>> }) {
+export function useLogout() {
   const { setProfile } = useStoreLocal()
   const { mutate: mutateLogout, isPending: isPendingLogout } = useMutation({
     mutationFn: (body: IValidateLogout) => {
@@ -15,7 +15,6 @@ export function useLogout({ setIsLogin }: { setIsLogin: Dispatch<SetStateAction<
     onSuccess: () => {
       clearLS()
       setProfile(null)
-      setIsLogin(true)
     },
     onError: (error) => {
       console.error('Logout error:', error)

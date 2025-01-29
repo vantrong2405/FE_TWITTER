@@ -22,7 +22,16 @@ export default function ResetPassword() {
       <Card className='w-full max-w-md'>
         <CardHeader>
           <CardTitle className='text-xl font-bold text-center text-blue-500'>
-            <Image src={imgTweet} alt='logo' width={100} height={100} className='mb-2 mx-auto' />
+            <Image
+              fill
+              priority
+              sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+              src={imgTweet}
+              alt='logo'
+              width={100}
+              height={100}
+              className='mb-2 mx-auto'
+            />
             <div>Reset your password</div>
           </CardTitle>
           <CardDescription className='text-center text-gray-600'>

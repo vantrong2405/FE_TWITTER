@@ -3,16 +3,14 @@ import { setProfileToLS } from '../../utils/utils'
 import { useStoreLocal } from '@/app/store/useStoreLocal'
 import { userApi } from '@/app/apis/user.api'
 import { queryKey } from '@/app/constant/query-key'
+import { tweetApi } from '@/app/apis/tweet.api'
 
-export function useGetMe() {
-  const { setProfile } = useStoreLocal()
+export function useGetTweets(limit: number, page: number) {
   const { data, refetch, isLoading, error } = useQuery({
-    queryKey: [queryKey.ME],
+    queryKey: [queryKey.TWEETS, page],
     queryFn: async () => {
-      const response = await userApi.getMe()
+      const response = await tweetApi.getTweets(limit, page)
       if (response?.data?.result) {
-        setProfileToLS(response.data.result)
-        setProfile(response.data.result)
         return response.data.result
       }
       return response

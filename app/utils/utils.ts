@@ -1,10 +1,10 @@
-import { User } from '../type/user.type'
 import { Path, UseFormSetError } from 'react-hook-form'
 import axios from 'axios'
 import { HttpStatusCode } from '../constant/httpStatusCode.enum'
 import clsx, { ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { format } from 'date-fns'
+import { User } from '../types/user.i'
 
 export const isClient = typeof window !== 'undefined'
 

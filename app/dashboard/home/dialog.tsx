@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import type { User } from '@/app/type/user.type'
+import type { User } from '@/app/types/user.i'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
