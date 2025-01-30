@@ -16,16 +16,16 @@ import { UseMutateFunction } from '@tanstack/react-query'
 import { AxiosResponse } from 'axios'
 
 interface TweetRemoveDialogProps {
-  deleteTweet: UseMutateFunction<AxiosResponse<any, any>, Error, string, unknown>
+  handleDeleteTweet: (idTweet: string) => Promise<void>
   idTweet: string
   isDeletetingTweet: boolean
 }
 
-export function TweetRemoveDialog({ deleteTweet, idTweet, isDeletetingTweet }: TweetRemoveDialogProps) {
+export function TweetRemoveDialog({ handleDeleteTweet, idTweet, isDeletetingTweet }: TweetRemoveDialogProps) {
   const [open, setOpen] = useState(false)
 
   const handleConfirm = () => {
-    deleteTweet(idTweet)
+    handleDeleteTweet(idTweet)
     setOpen(false)
   }
 

@@ -12,8 +12,18 @@ import Image from 'next/image'
 import { Icons } from '../ui/icon'
 import { useCreateTweet } from '@/app/hook/tweets/useCreateTweet'
 import { useUploadImage } from '@/app/hook/medias/useUploadImage'
+import { Tweet } from '@/app/types/tweet.i'
+import { useStoreLocal } from '@/app/store/useStoreLocal'
 
-export function TweetDialog({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+export function TweetDialog({
+  isOpen,
+  onClose,
+  onTweetCreated
+}: {
+  isOpen: boolean
+  onClose: () => void
+  onTweetCreated: (tweet: Tweet) => void
+}) {
   const [tweet, setTweet] = useState('')
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
@@ -21,6 +31,7 @@ export function TweetDialog({ isOpen, onClose }: { isOpen: boolean; onClose: () 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const { createTweet, isCreatingTweet } = useCreateTweet()
+  const { profile } = useStoreLocal()
 
   useEffect(() => {
     if (isOpen && textareaRef.current) {
@@ -115,7 +126,11 @@ export function TweetDialog({ isOpen, onClose }: { isOpen: boolean; onClose: () 
             : []
       }
 
-      createTweet(tweetData)
+      const newTweet = await createTweet(tweetData)
+      onTweetCreated({
+        ...newTweet.data.result,
+        user: profile
+      })
       setTweet('')
       responseUpload = []
       setSelectedFiles([])

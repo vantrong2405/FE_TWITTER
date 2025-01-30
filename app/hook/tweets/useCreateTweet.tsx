@@ -7,8 +7,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 export function useCreateTweet() {
   const queryClient = useQueryClient()
-  const { mutate: createTweet, isPending: isCreatingTweet } = useMutation({
-    mutationFn: (body: {
+
+  const { mutateAsync: createTweet, isPending: isCreatingTweet } = useMutation({
+    mutationFn: async (body: {
       type: number
       audience: number
       content: string
@@ -17,18 +18,16 @@ export function useCreateTweet() {
       mentions: string[]
       medias: { url: string; type: number }[]
     }) => {
-      return tweetApi.createTweet(body)
+      return await tweetApi.createTweet(body) // Dùng async/await
     },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: [queryKey.TWEETS] })
+    onSuccess: async (data) => {
+      console.log('🚀 ~ onSuccess: ~ data:', data)
+      await queryClient.invalidateQueries({ queryKey: [queryKey.TWEETS] }) // Làm mới danh sách tweets
     },
     onError: (error) => {
-      console.error('Logout error:', error)
+      console.error('Tweet creation error:', error)
     }
   })
 
-  return {
-    createTweet,
-    isCreatingTweet
-  }
+  return { createTweet, isCreatingTweet }
 }

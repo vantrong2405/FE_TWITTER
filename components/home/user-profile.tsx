@@ -13,10 +13,10 @@ import { EditProfileDialog } from '@/app/dashboard/home/dialog'
 
 export function UserProfile({ profile }: { profile: User | null }) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const coverPhotoUrl =
-    validateUrl(profile?.cover_photo ?? '') ||
-    'https://img.freepik.com/free-vector/gradient-particle-wave-background_23-2150517309.jpg'
-  const avatarUrl = validateUrl(profile?.avatar ?? '')
+  // const coverPhotoUrl =
+  //   validateUrl(profile?.cover_photo ?? '') ||
+  //   'https://img.freepik.com/free-vector/gradient-particle-wave-background_23-2150517309.jpg'
+  // const avatarUrl = validateUrl(profile?.avatar ?? '')
 
   return (
     <>
@@ -24,7 +24,7 @@ export function UserProfile({ profile }: { profile: User | null }) {
         <div className='relative h-64'>
           <Image
             priority
-            src={coverPhotoUrl}
+            src={'https://img.freepik.com/free-vector/gradient-particle-wave-background_23-2150517309.jpg'}
             alt='Profile banner'
             fill
             style={{ objectFit: 'cover' }}
@@ -44,7 +44,7 @@ export function UserProfile({ profile }: { profile: User | null }) {
             <div className='flex flex-col md:flex-row md:items-end'>
               <Avatar className='h-32 w-32 border-4 border-white shadow-lg -mt-16 md:-mt-20 md:mr-6'>
                 {profile?.avatar ? (
-                  <AvatarImage src={avatarUrl} alt={profile?.name || '@johndoe'} />
+                  <AvatarImage src={profile?.avatar ?? ''} alt={profile?.name || '@johndoe'} />
                 ) : (
                   <AvatarFallback>{getFirstLetter(profile?.name ?? 'Anonymous')}</AvatarFallback>
                 )}

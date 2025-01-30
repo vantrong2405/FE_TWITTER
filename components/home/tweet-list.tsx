@@ -17,25 +17,36 @@ import { pagination } from '@/app/constant/query-config'
 import { useLikeTweet } from '@/app/hook/tweets/useLikeTweet'
 import { useUnLikeTweet } from '@/app/hook/tweets/useUnLikeTweet'
 
-export function TweetList() {
+export function TweetList({ newTweet }: { newTweet?: Tweet }) {
   const [tweets, setTweets] = useState<Tweet[]>([])
   const [page, setPage] = useState(pagination.PAGE)
   const [hasMore, setHasMore] = useState(true)
-
   const { data: dataTweets } = useGetTweets(pagination.LIMIT, page)
   const { deleteTweet, isDeletingTweet } = useDeleteTweet()
   const { likeTweet } = useLikeTweet()
   const { unLikeTweet } = useUnLikeTweet()
+
+  const handleDeleteTweet = async (idTweet: string) => {
+    deleteTweet(idTweet)
+    setTweets((prevTweets) => prevTweets.filter((tweet) => tweet._id !== idTweet))
+  }
+
+  // Thêm tweet mới vào danh sách (tránh trùng lặp)
+  useEffect(() => {
+    if (newTweet && !tweets.some((tweet) => tweet._id === newTweet._id)) {
+      setTweets((prevTweets) => [newTweet, ...prevTweets]) // Thêm tweet mới vào đầu danh sách
+    }
+  }, [newTweet])
+
+  // Khi API trả về tweets mới, hợp nhất với danh sách hiện tại (loại bỏ tweet trùng)
   useEffect(() => {
     if (dataTweets?.tweets) {
       setTweets((prevTweets) => {
-        const uniqueTweets = [
+        const mergedTweets = [
           ...prevTweets,
-          ...dataTweets.tweets.filter(
-            (newTweet: Tweet) => !prevTweets.some((tweet: Tweet) => tweet._id === newTweet._id)
-          )
+          ...dataTweets.tweets.filter((t: Tweet) => !prevTweets.some((p: Tweet) => p._id === t._id))
         ]
-        return uniqueTweets
+        return mergedTweets
       })
 
       setHasMore(page < dataTweets.total_page)
@@ -96,63 +107,66 @@ export function TweetList() {
       }
     >
       <div className='space-y-4'>
-        {tweets.map((tweet: Tweet, index: number) => (
-          <Card key={tweet._id || index} className='hover:shadow-md transition-shadow duration-200'>
-            <CardContent className='p-4'>
-              <div className='flex space-x-4'>
-                <Avatar>
-                  <AvatarImage src={tweet.user?.avatar} alt={tweet.user?.username} />
-                  <AvatarFallback>{(tweet.user?.name ?? '').slice(0, 2).toUpperCase()}</AvatarFallback>
-                </Avatar>
-                <div className='flex-grow flex justify-between'>
-                  <div className='flex items-center space-x-2'>
-                    <span className='font-bold hover:underline cursor-pointer'>{tweet.user?.name}</span>
-                    <span>@{tweet.user?.username}</span>
-                    <span>·</span>
-                    <span className='hover:underline cursor-pointer'>
-                      {formatDistanceToNow(new Date(tweet.created_at), { addSuffix: true })}
-                    </span>
-                  </div>
-                  <div className='text-end'>
-                    <TweetRemoveDialog
-                      deleteTweet={deleteTweet}
-                      idTweet={tweet._id}
-                      isDeletetingTweet={isDeletingTweet}
-                    />
+        {tweets.map((tweet: Tweet, index: number) => {
+          console.log('🚀 ~ {tweets.map ~ tweet:', tweet)
+          return (
+            <Card key={tweet._id || index} className='hover:shadow-md transition-shadow duration-200'>
+              <CardContent className='p-4'>
+                <div className='flex space-x-4'>
+                  <Avatar>
+                    <AvatarImage src={tweet.user?.avatar} alt={tweet.user?.username} />
+                    <AvatarFallback>{(tweet.user?.name ?? '').slice(0, 2).toUpperCase()}</AvatarFallback>
+                  </Avatar>
+                  <div className='flex-grow flex justify-between'>
+                    <div className='flex items-center space-x-2'>
+                      <span className='font-bold hover:underline cursor-pointer'>{tweet.user?.name}</span>
+                      <span>@{tweet.user?.username}</span>
+                      <span>·</span>
+                      <span className='hover:underline cursor-pointer'>
+                        {formatDistanceToNow(new Date(tweet.created_at), { addSuffix: true })}
+                      </span>
+                    </div>
+                    <div className='text-end'>
+                      <TweetRemoveDialog
+                        handleDeleteTweet={handleDeleteTweet}
+                        idTweet={tweet._id}
+                        isDeletetingTweet={isDeletingTweet}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <p className='mt-2 whitespace-pre-wrap'>{tweet.content}</p>
-              {tweet.medias && tweet.medias.length > 0 && (
-                <div className='mt-2'>
-                  <ImageGrid medias={tweet.medias} />
+                <p className='mt-2 whitespace-pre-wrap'>{tweet.content}</p>
+                {tweet.medias && tweet.medias.length > 0 && (
+                  <div className='mt-2'>
+                    <ImageGrid medias={tweet.medias} />
+                  </div>
+                )}
+                <div className='flex justify-between mt-4'>
+                  <Button variant='ghost' size='icon' className='hover:text-blue-500 hover:bg-blue-50'>
+                    <Icons.messageCircle className='h-5 w-5 mr-1' />
+                    {tweet.comment_count}
+                  </Button>
+                  <Button variant='ghost' size='icon' className='hover:text-green-500 hover:bg-green-50'>
+                    <Icons.repeat className='h-5 w-5 mr-1' />
+                    {tweet.retweet_count}
+                  </Button>
+                  <Button
+                    variant='ghost'
+                    size='icon'
+                    className={`${tweet.likes > 0 ? 'text-blue-500' : ''}`}
+                    onClick={() => handleLikeToggle(tweet)}
+                  >
+                    <Icons.heart className='h-5 w-5 mr-1' />
+                    {tweet.likes}
+                  </Button>
+                  <Button variant='ghost' size='icon' className='hover:text-blue-500 hover:bg-blue-50'>
+                    <Icons.share className='h-5 w-5' />
+                  </Button>
                 </div>
-              )}
-              <div className='flex justify-between mt-4'>
-                <Button variant='ghost' size='icon' className='hover:text-blue-500 hover:bg-blue-50'>
-                  <Icons.messageCircle className='h-5 w-5 mr-1' />
-                  {tweet.comment_count}
-                </Button>
-                <Button variant='ghost' size='icon' className='hover:text-green-500 hover:bg-green-50'>
-                  <Icons.repeat className='h-5 w-5 mr-1' />
-                  {tweet.retweet_count}
-                </Button>
-                <Button
-                  variant='ghost'
-                  size='icon'
-                  className={`${tweet.likes > 0 ? 'text-blue-500' : ''}`}
-                  onClick={() => handleLikeToggle(tweet)}
-                >
-                  <Icons.heart className='h-5 w-5 mr-1' />
-                  {tweet.likes}
-                </Button>
-                <Button variant='ghost' size='icon' className='hover:text-blue-500 hover:bg-blue-50'>
-                  <Icons.share className='h-5 w-5' />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          )
+        })}
       </div>
     </InfiniteScroll>
   )

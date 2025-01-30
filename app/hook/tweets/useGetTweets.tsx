@@ -1,7 +1,4 @@
 import { useQuery } from '@tanstack/react-query'
-import { setProfileToLS } from '../../utils/utils'
-import { useStoreLocal } from '@/app/store/useStoreLocal'
-import { userApi } from '@/app/apis/user.api'
 import { queryKey } from '@/app/constant/query-key'
 import { tweetApi } from '@/app/apis/tweet.api'
 

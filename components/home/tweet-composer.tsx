@@ -5,8 +5,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Card, CardContent } from '@/components/ui/card'
 import { TweetDialog } from './tweet-dialog'
+import { Tweet } from '@/app/types/tweet.i'
 
-export function TweetComposer() {
+export function TweetComposer({ handleTweetCreated }: { handleTweetCreated: (tweet: Tweet) => void }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   const openDialog = () => setIsDialogOpen(true)
@@ -32,7 +33,7 @@ export function TweetComposer() {
             />
           </div>
         </div>
-        <TweetDialog isOpen={isDialogOpen} onClose={closeDialog} />
+        <TweetDialog isOpen={isDialogOpen} onClose={closeDialog} onTweetCreated={handleTweetCreated} />
       </CardContent>
     </Card>
   )
