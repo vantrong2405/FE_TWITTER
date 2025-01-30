@@ -44,12 +44,12 @@ export function TweetDialog({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const files = Array.from(e.target.files)
-      setSelectedFiles((prev) => [...prev, ...files]) // Lưu danh sách file vào state
+      setSelectedFiles((prev) => [...prev, ...files])
     }
   }
 
   const removeFile = (index: number) => {
-    setSelectedFiles((prev) => prev.filter((_, i) => i !== index)) // Xóa file khỏi selectedFiles
+    setSelectedFiles((prev) => prev.filter((_, i) => i !== index))
   }
 
   const renderedFiles = useMemo(() => {
@@ -64,13 +64,10 @@ export function TweetDialog({
           {selectedFiles.map((file, index) => (
             <div key={index} className='relative group'>
               <Image
-                priority
-                fill
                 src={URL.createObjectURL(file) || '/placeholder.svg'}
                 alt={`Upload ${index + 1}`}
                 width={200}
                 height={200}
-                sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
                 className='w-full h-32 object-cover rounded-xl shadow-lg cursor-pointer'
                 onClick={() => setSelectedImage(URL.createObjectURL(file))}
               />
@@ -78,7 +75,7 @@ export function TweetDialog({
                 type='button'
                 variant='destructive'
                 size='icon'
-                onClick={() => removeFile(index)} // Gọi hàm removeFile
+                onClick={() => removeFile(index)}
                 className='absolute -top-2 -right-2 rounded-full w-8 h-8 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg z-20'
               >
                 <Icons.x className='h-4 w-4' />
@@ -252,15 +249,13 @@ export function TweetDialog({
           <DialogContent className='sm:max-w-[90vw] sm:max-h-[90vh] p-0'>
             <DialogTitle className='sr-only'>Compose Tweet</DialogTitle>
             <Image
+              fill
               src={selectedImage || '/placeholder.svg'}
               alt='Selected image'
               layout='responsive'
               width={1920}
               height={1080}
               objectFit='contain'
-              priority
-              fill
-              sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
             />
           </DialogContent>
         </Dialog>

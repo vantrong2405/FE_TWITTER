@@ -6,10 +6,18 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Card, CardContent } from '@/components/ui/card'
 import { TweetDialog } from './tweet-dialog'
 import { Tweet } from '@/app/types/tweet.i'
+import { User } from '@/app/types/user.i'
+import { getFirstLetter } from '@/app/utils/utils'
 
-export function TweetComposer({ handleTweetCreated }: { handleTweetCreated: (tweet: Tweet) => void }) {
+export function TweetComposer({
+  handleTweetCreated,
+  profile
+}: {
+  handleTweetCreated: (tweet: Tweet) => void
+  profile: User | null
+}) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-
+  console.log('🚀 ~ TweetComposer ~ profile:', profile)
   const openDialog = () => setIsDialogOpen(true)
   const closeDialog = () => setIsDialogOpen(false)
 
@@ -18,11 +26,11 @@ export function TweetComposer({ handleTweetCreated }: { handleTweetCreated: (twe
       <CardContent className='p-6'>
         <div className='flex space-x-4'>
           <Avatar className='w-12 h-12 border-2 border-blue-400'>
-            <AvatarImage
-              src='https://png.pngtree.com/png-vector/20190811/ourlarge/pngtree-baby-animal-cute-panda-smile-png-image_1687512.jpg'
-              alt='@username'
-            />
-            <AvatarFallback>UN</AvatarFallback>
+            {profile?.avatar ? (
+              <AvatarImage src={profile?.avatar ?? ''} alt={profile?.name || '@johndoe'} />
+            ) : (
+              <AvatarFallback>{getFirstLetter(profile?.name ?? 'Anonymous')}</AvatarFallback>
+            )}
           </Avatar>
           <div className='flex-grow'>
             <Textarea

@@ -16,6 +16,7 @@ import { useGetTweets } from '@/app/hook/tweets/useGetTweets'
 import { pagination } from '@/app/constant/query-config'
 import { useLikeTweet } from '@/app/hook/tweets/useLikeTweet'
 import { useUnLikeTweet } from '@/app/hook/tweets/useUnLikeTweet'
+import { useStoreLocal } from '@/app/store/useStoreLocal'
 
 export function TweetList({ newTweet }: { newTweet?: Tweet }) {
   const [tweets, setTweets] = useState<Tweet[]>([])
@@ -25,20 +26,19 @@ export function TweetList({ newTweet }: { newTweet?: Tweet }) {
   const { deleteTweet, isDeletingTweet } = useDeleteTweet()
   const { likeTweet } = useLikeTweet()
   const { unLikeTweet } = useUnLikeTweet()
+  const { profile } = useStoreLocal()
 
   const handleDeleteTweet = async (idTweet: string) => {
     deleteTweet(idTweet)
     setTweets((prevTweets) => prevTweets.filter((tweet) => tweet._id !== idTweet))
   }
 
-  // Thêm tweet mới vào danh sách (tránh trùng lặp)
   useEffect(() => {
     if (newTweet && !tweets.some((tweet) => tweet._id === newTweet._id)) {
-      setTweets((prevTweets) => [newTweet, ...prevTweets]) // Thêm tweet mới vào đầu danh sách
+      setTweets((prevTweets) => [newTweet, ...prevTweets])
     }
   }, [newTweet])
 
-  // Khi API trả về tweets mới, hợp nhất với danh sách hiện tại (loại bỏ tweet trùng)
   useEffect(() => {
     if (dataTweets?.tweets) {
       setTweets((prevTweets) => {
@@ -108,7 +108,6 @@ export function TweetList({ newTweet }: { newTweet?: Tweet }) {
     >
       <div className='space-y-4'>
         {tweets.map((tweet: Tweet, index: number) => {
-          console.log('🚀 ~ {tweets.map ~ tweet:', tweet)
           return (
             <Card key={tweet._id || index} className='hover:shadow-md transition-shadow duration-200'>
               <CardContent className='p-4'>
@@ -126,13 +125,16 @@ export function TweetList({ newTweet }: { newTweet?: Tweet }) {
                         {formatDistanceToNow(new Date(tweet.created_at), { addSuffix: true })}
                       </span>
                     </div>
-                    <div className='text-end'>
-                      <TweetRemoveDialog
-                        handleDeleteTweet={handleDeleteTweet}
-                        idTweet={tweet._id}
-                        isDeletetingTweet={isDeletingTweet}
-                      />
-                    </div>
+                    {/* Xóa tweet */}
+                    {profile?._id === tweet.user._id && (
+                      <div className='text-end'>
+                        <TweetRemoveDialog
+                          handleDeleteTweet={handleDeleteTweet}
+                          idTweet={tweet._id}
+                          isDeletetingTweet={isDeletingTweet}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
                 <p className='mt-2 whitespace-pre-wrap'>{tweet.content}</p>

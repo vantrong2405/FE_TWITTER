@@ -13,6 +13,7 @@ const configEnv = configSchema.safeParse({
   NEXT_PUBLIC_VITE_GOOGLE_AUTHORIZED_REDIRECT_URI: process.env.NEXT_PUBLIC_VITE_GOOGLE_AUTHORIZED_REDIRECT_URI,
   NEXT_PUBLIC_VITE_API_URL: process.env.NEXT_PUBLIC_VITE_API_URL || ''
 })
+
 if (!configEnv.success) {
   console.error(configEnv.error.errors)
   throw new Error('Invalid configuration')

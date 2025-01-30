@@ -13,7 +13,7 @@ export const tweetApi = {
     return http.post(`/tweet/`, body)
   },
   getTweets(limit: number, page: number) {
-    return http.get(`/tweet/`, {
+    return http.get(`/tweet/get-newfeed-me`, {
       params: {
         limit,
         page

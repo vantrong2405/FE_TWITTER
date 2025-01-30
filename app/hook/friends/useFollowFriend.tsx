@@ -7,9 +7,7 @@ export function useFollowFriend() {
     mutationFn: (data: IFollowFriend) => {
       return friendApi.followFriend(data)
     },
-    onSuccess: (data) => {
-      console.log('Successfully followed:', data)
-    },
+    onSuccess: (data) => {},
     onError: (error) => {
       console.error('Error following friend:', error)
     }

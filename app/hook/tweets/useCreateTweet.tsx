@@ -18,11 +18,10 @@ export function useCreateTweet() {
       mentions: string[]
       medias: { url: string; type: number }[]
     }) => {
-      return await tweetApi.createTweet(body) // Dùng async/await
+      return await tweetApi.createTweet(body)
     },
     onSuccess: async (data) => {
-      console.log('🚀 ~ onSuccess: ~ data:', data)
-      await queryClient.invalidateQueries({ queryKey: [queryKey.TWEETS] }) // Làm mới danh sách tweets
+      await queryClient.invalidateQueries({ queryKey: [queryKey.TWEETS] })
     },
     onError: (error) => {
       console.error('Tweet creation error:', error)

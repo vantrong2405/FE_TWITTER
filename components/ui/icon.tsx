@@ -47,7 +47,8 @@ import {
   Briefcase,
   Bot,
   PenSquare,
-  X
+  X,
+  Upload
 } from 'lucide-react'
 
 export const Icons = {
@@ -99,5 +100,6 @@ export const Icons = {
   briefcase: Briefcase,
   bot: Bot,
   penSquare: PenSquare,
-  x: X
+  x: X,
+  upload: Upload
 }

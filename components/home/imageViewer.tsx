@@ -97,14 +97,12 @@ export function ImageViewer({ images, initialIndex, open, onClose }: ImageViewer
               </div>
             )}
             <Image
-              priority
+              fill
               src={images[currentIndex].url || '/placeholder.svg'}
               alt={`Image ${currentIndex + 1} of ${images.length}`}
-              fill
               className={`object-contain transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
               onLoadingComplete={() => setIsLoading(false)}
               onLoad={() => setIsLoading(false)}
-              sizes='100vw'
             />
           </div>
 

@@ -51,7 +51,7 @@ export default function FormDashBoard() {
       </div>
       <main className='flex-grow max-w-2xl w-full mx-auto lg:ml-1/4'>
         <UserProfile profile={profile} />
-        <TweetComposer handleTweetCreated={handleTweetCreated} />
+        <TweetComposer handleTweetCreated={handleTweetCreated} profile={profile} />
         <NewsCarousel />
         <TweetList newTweet={newTweet} />
       </main>

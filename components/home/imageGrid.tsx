@@ -50,11 +50,9 @@ export function ImageGrid({ medias }: ImageGridProps) {
             className={`relative ${getImageHeight()} ${medias.length === 2 && index === 0 ? 'row-span-2' : ''}`}
           >
             <Image
-              priority
+              fill
               src={media.url || '/placeholder.svg'}
               alt={`Tweet media ${index + 1}`}
-              fill
-              sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
               className='object-cover cursor-pointer hover:opacity-90 transition-opacity'
               onClick={() => setSelectedImageIndex(index)}
             />

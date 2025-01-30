@@ -13,25 +13,21 @@ import { EditProfileDialog } from '@/app/dashboard/home/dialog'
 
 export function UserProfile({ profile }: { profile: User | null }) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  // const coverPhotoUrl =
-  //   validateUrl(profile?.cover_photo ?? '') ||
-  //   'https://img.freepik.com/free-vector/gradient-particle-wave-background_23-2150517309.jpg'
-  // const avatarUrl = validateUrl(profile?.avatar ?? '')
 
   return (
     <>
       <Card className='mb-6 overflow-hidden shadow-lg'>
         <div className='relative h-64'>
           <Image
-            priority
-            src={'https://img.freepik.com/free-vector/gradient-particle-wave-background_23-2150517309.jpg'}
+            src={
+              profile?.cover_photo ||
+              'https://img.freepik.com/free-vector/gradient-particle-wave-background_23-2150517309.jpg'
+            }
             alt='Profile banner'
-            fill
             style={{ objectFit: 'cover' }}
+            fill
             className='transition-opacity duration-300 ease-in-out'
-            sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
           />
-
           <div className='absolute inset-0 bg-gradient-to-t from-black/60 to-transparent' />
         </div>
         <CardContent className='relative px-6 pb-6'>
@@ -55,9 +51,6 @@ export function UserProfile({ profile }: { profile: User | null }) {
                 <p className=''>@{profile?.username ?? ''}</p>
               </div>
             </div>
-            <Button variant='outline' onClick={() => setIsEditDialogOpen(true)} className='mt-4 md:mt-0'>
-              Edit Profile
-            </Button>
           </motion.div>
           <motion.div
             initial={{ y: 20, opacity: 0 }}

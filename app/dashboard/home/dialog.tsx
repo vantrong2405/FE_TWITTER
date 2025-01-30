@@ -36,8 +36,11 @@ export function EditProfileDialog({ isOpen, onClose, user }: EditProfileDialogPr
   }, [user])
 
   const { register, handleSubmit, setValue, errors } = useUpdateProfileFormSchema()
-  const { mutateUpdateProfile, isPendingUpdateProfile } = useUpdateProfile(onClose)
-  const onSubmit = handleSubmit((data) => mutateUpdateProfile(data))
+  const { mutateUpdateProfile, isPendingUpdateProfile } = useUpdateProfile()
+  const onSubmit = handleSubmit((data) => {
+    mutateUpdateProfile(data)
+    onClose()
+  })
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
