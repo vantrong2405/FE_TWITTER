@@ -17,6 +17,9 @@ import { pagination } from '@/app/constant/query-config'
 import { useLikeTweet } from '@/app/hook/tweets/useLikeTweet'
 import { useUnLikeTweet } from '@/app/hook/tweets/useUnLikeTweet'
 import { useStoreLocal } from '@/app/store/useStoreLocal'
+import Link from 'next/link'
+import { pathUrl } from '@/app/constant/path'
+import { getFirstLetter } from '@/app/utils/utils'
 
 export function TweetList({ newTweet }: { newTweet?: Tweet }) {
   const [tweets, setTweets] = useState<Tweet[]>([])
@@ -112,13 +115,18 @@ export function TweetList({ newTweet }: { newTweet?: Tweet }) {
             <Card key={tweet._id || index} className='hover:shadow-md transition-shadow duration-200'>
               <CardContent className='p-4'>
                 <div className='flex space-x-4'>
-                  <Avatar>
-                    <AvatarImage src={tweet.user?.avatar} alt={tweet.user?.username} />
-                    <AvatarFallback>{(tweet.user?.name ?? '').slice(0, 2).toUpperCase()}</AvatarFallback>
-                  </Avatar>
+                  <Link href={pathUrl.profile + profile?.username} passHref>
+                    <Avatar>
+                      <AvatarImage src={tweet.user?.avatar} alt={tweet.user?.username} />
+                      <AvatarFallback>{getFirstLetter(tweet.user?.name ?? '')}</AvatarFallback>
+                    </Avatar>
+                  </Link>
+
                   <div className='flex-grow flex justify-between'>
                     <div className='flex items-center space-x-2'>
-                      <span className='font-bold hover:underline cursor-pointer'>{tweet.user?.name}</span>
+                      <Link href={pathUrl.profile + profile?.username} passHref>
+                        <span className='font-bold hover:underline cursor-pointer'>{tweet.user?.name}</span>
+                      </Link>
                       <span>@{tweet.user?.username}</span>
                       <span>·</span>
                       <span className='hover:underline cursor-pointer'>

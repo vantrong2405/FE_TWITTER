@@ -64,7 +64,10 @@ export function TweetDialog({
           {selectedFiles.map((file, index) => (
             <div key={index} className='relative group'>
               <Image
-                src={URL.createObjectURL(file) || '/placeholder.svg'}
+                src={
+                  URL.createObjectURL(file) ||
+                  'https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg'
+                }
                 alt={`Upload ${index + 1}`}
                 width={200}
                 height={200}
@@ -250,7 +253,10 @@ export function TweetDialog({
             <DialogTitle className='sr-only'>Compose Tweet</DialogTitle>
             <Image
               fill
-              src={selectedImage || '/placeholder.svg'}
+              src={
+                selectedImage ||
+                'https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg'
+              }
               alt='Selected image'
               layout='responsive'
               width={1920}

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { X, ChevronLeft, ChevronRight, ZoomIn, Maximize } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import { DialogTitle } from '@radix-ui/react-dialog'
+import { DialogDescription, DialogTitle } from '@radix-ui/react-dialog'
 
 interface ImageViewerProps {
   images: { url: string }[]
@@ -44,6 +44,7 @@ export function ImageViewer({ images, initialIndex, open, onClose }: ImageViewer
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className='max-w-[100vw] max-h-[100vh] h-screen w-screen p-0 border-none bg-black/95 backdrop-blur-xl'>
         <DialogTitle className='sr-only'>Media Gallery</DialogTitle>
+        <DialogDescription className='sr-only'>View media in full screen</DialogDescription>
         <div className='relative w-full h-full flex items-center justify-center'>
           {/* Top controls bar */}
           <div className='absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-black/40 to-transparent z-10'>
@@ -98,7 +99,11 @@ export function ImageViewer({ images, initialIndex, open, onClose }: ImageViewer
             )}
             <Image
               fill
-              src={images[currentIndex].url || '/placeholder.svg'}
+              priority
+              src={
+                images[currentIndex].url ||
+                'https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg'
+              }
               alt={`Image ${currentIndex + 1} of ${images.length}`}
               className={`object-contain transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
               onLoadingComplete={() => setIsLoading(false)}

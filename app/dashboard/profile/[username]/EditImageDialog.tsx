@@ -10,6 +10,8 @@ import Image from 'next/image'
 import { useDropzone } from 'react-dropzone'
 import { Upload, X, ImageIcon } from 'lucide-react'
 import { Icons } from '@/components/ui/icon'
+import { useUploadImage } from '@/app/hook/medias/useUploadImage'
+import { validateUrl } from '@/app/utils/utils'
 
 interface EditImageDialogProps {
   isOpen: boolean
@@ -36,6 +38,7 @@ export function EditImageDialog({
   const [previewUrl, setPreviewUrl] = useState<string | null>(currentImageUrl || null)
   const [isSaving, setIsSaving] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const { uploadImage, isUploadingImage } = useUploadImage()
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0]
@@ -59,12 +62,28 @@ export function EditImageDialog({
   const handleSave = async () => {
     setIsSaving(true)
     setErrorMessage(null)
+
     try {
-      await onSave(selectedFile, imageUrl)
+      let finalImageUrl = imageUrl
+      if (activeTab === 'upload' && selectedFile) {
+        const response = await uploadImage(selectedFile)
+        console.log('🚀 ~ handleSave ~ response:', response)
+        const uploadedImageUrl = response.data.result[0].url
+        if (!uploadedImageUrl) {
+          throw new Error('Upload failed')
+        }
+        finalImageUrl = uploadedImageUrl
+        onSave(selectedFile, finalImageUrl)
+      } else {
+        onSave(selectedFile, imageUrl)
+      }
+
+      if (activeTab === 'url' && !imageUrl) {
+        throw new Error('Invalid URL')
+      }
       onClose()
     } catch (error) {
       console.error('Failed to save image:', error)
-      setErrorMessage('Failed to save image. Please try again.')
     } finally {
       setIsSaving(false)
     }
@@ -108,7 +127,10 @@ export function EditImageDialog({
               {previewUrl ? (
                 <div className='relative w-full h-64'>
                   <Image
-                    src={previewUrl || '/placeholder.svg'}
+                    src={validateUrl(
+                      previewUrl ||
+                        'https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg'
+                    )}
                     alt='Preview'
                     fill
                     className='object-cover rounded-lg'
@@ -162,7 +184,15 @@ export function EditImageDialog({
             </div>
             {imageUrl && (
               <div className='relative w-[90%] mx-auto h-64 mt-4'>
-                <Image src={imageUrl || '/placeholder.svg'} alt='Preview' fill className='object-cover rounded-lg' />
+                <Image
+                  src={validateUrl(
+                    imageUrl ||
+                      'https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg'
+                  )}
+                  alt='Preview'
+                  fill
+                  className='object-cover rounded-lg'
+                />
                 <Button
                   variant='destructive'
                   size='icon'
@@ -186,9 +216,10 @@ export function EditImageDialog({
               (activeTab === 'upload' && !selectedFile) ||
               (activeTab === 'url' && !imageUrl) ||
               isSaving ||
-              isPendingUpdateProfile
+              isPendingUpdateProfile ||
+              isUploadingImage
             }
-            isLoading={isPendingUpdateProfile}
+            isLoading={isPendingUpdateProfile || isUploadingImage}
             variant='secondary'
           >
             {isSaving ? (

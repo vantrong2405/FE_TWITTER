@@ -25,9 +25,9 @@ import {
 
 export default function EnhancedChat() {
   return (
-    <div className='flex h-screen bg-gradient-to-br from-gray-50 to-gray-100'>
+    <div className='flex h-screen'>
       {/* Enhanced Sidebar */}
-      <div className='w-64 bg-white border-r shadow-sm'>
+      <div className='w-64 border-r shadow-sm'>
         <div className='p-4'>
           <div className='flex items-center justify-between mb-4'>
             <h1 className='text-xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent'>
@@ -96,9 +96,9 @@ export default function EnhancedChat() {
       </div>
 
       {/* Main Chat Area */}
-      <div className='flex flex-1 flex-col bg-white'>
+      <div className='flex flex-1 flex-col '>
         {/* Enhanced Header */}
-        <header className='flex items-center justify-between border-b px-6 py-4 bg-white/50 backdrop-blur-sm'>
+        <header className='flex items-center justify-between border-b px-6 py-4  backdrop-blur-sm'>
           <div className='flex items-center gap-4'>
             <div className='flex items-center gap-2'>
               <Avatar className='h-8 w-8'>
@@ -165,7 +165,7 @@ export default function EnhancedChat() {
         </ScrollArea>
 
         {/* Enhanced Input Area */}
-        <div className='border-t bg-white/50 backdrop-blur-sm p-4'>
+        <div className='border-t  backdrop-blur-sm p-4'>
           <Card className='flex items-center gap-2 p-2 shadow-sm'>
             <Button variant='ghost' size='icon' className='rounded-full'>
               <Plus className='h-5 w-5' />

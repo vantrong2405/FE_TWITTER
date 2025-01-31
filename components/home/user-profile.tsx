@@ -19,14 +19,13 @@ export function UserProfile({ profile }: { profile: User | null }) {
       <Card className='mb-6 overflow-hidden shadow-lg'>
         <div className='relative h-64'>
           <Image
-            src={
+            src={validateUrl(
               profile?.cover_photo ||
-              'https://img.freepik.com/free-vector/gradient-particle-wave-background_23-2150517309.jpg'
-            }
+                'https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg'
+            )}
             alt='Profile banner'
-            style={{ objectFit: 'cover' }}
             fill
-            className='transition-opacity duration-300 ease-in-out'
+            className='transition-opacity duration-300 ease-in-out object-cover'
           />
           <div className='absolute inset-0 bg-gradient-to-t from-black/60 to-transparent' />
         </div>

@@ -12,7 +12,7 @@ import { Icons } from '@/components/ui/icon'
 import { useParams } from 'next/navigation'
 import { useStoreLocal } from '@/app/store/useStoreLocal'
 import { EditProfileDialog } from '../../home/dialog'
-import { getFirstLetter } from '@/app/utils/utils'
+import { getFirstLetter, validateUrl } from '@/app/utils/utils'
 import { useGetProfile } from '@/app/hook/user/usegetProfile'
 import { EditImageDialog } from './EditImageDialog'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -30,19 +30,16 @@ export default function ProfilePage() {
   const [isTab, setIsTab] = useState<'url' | 'upload'>('upload')
   const handleAvatarSave = async (imageFile: File | null, imageUrl: string) => {
     try {
-      let urlImage = ''
       if (isTab === 'upload' && imageFile) {
-        urlImage = URL.createObjectURL(imageFile)
-        mutateUpdateProfile({ avatar: urlImage })
+        mutateUpdateProfile({ avatar: imageUrl })
       } else if (isTab === 'url' && imageUrl) {
-        urlImage = imageUrl
         mutateUpdateProfile({ avatar: imageUrl })
       } else {
         console.warn('No valid image selected.')
         return
       }
 
-      console.log('Updating avatar with:', isTab, urlImage)
+      console.log('Updating avatar with:', isTab, imageUrl)
     } catch (error) {
       console.error('Failed to update avatar:', error)
     }
@@ -50,20 +47,17 @@ export default function ProfilePage() {
 
   const handleCoverSave = async (imageFile: File | null, imageUrl: string) => {
     try {
-      let urlImage = ''
-
       if (isTab === 'upload' && imageFile) {
-        urlImage = URL.createObjectURL(imageFile)
-        mutateUpdateProfile({ cover_photo: urlImage })
+        mutateUpdateProfile({ cover_photo: imageUrl })
       } else if (isTab === 'url' && imageUrl) {
-        urlImage = imageUrl
+        imageUrl = imageUrl
         mutateUpdateProfile({ cover_photo: imageUrl })
       } else {
         console.warn('No valid cover photo selected.')
         return
       }
 
-      console.log('Updating cover photo with:', isTab, urlImage)
+      console.log('Updating cover photo with:', isTab, imageUrl)
     } catch (error) {
       console.error('Failed to update cover photo:', error)
     }
@@ -82,9 +76,13 @@ export default function ProfilePage() {
             ) : (
               <Image
                 fill
-                src={currentUser?.cover_photo || '/placeholder.svg'}
+                src={validateUrl(
+                  currentUser?.cover_photo ||
+                    'https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg'
+                )}
                 alt='Profile cover'
                 className='object-cover'
+                priority
               />
             )}
             {isOwner && (
@@ -223,7 +221,10 @@ export default function ProfilePage() {
               <CardContent className='pt-6'>
                 <div className='flex items-start space-x-4'>
                   <Avatar>
-                    <AvatarImage src='/placeholder.svg' alt='@janedoe' />
+                    <AvatarImage
+                      src='https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg'
+                      alt='@janedoe'
+                    />
                     <AvatarFallback>JD</AvatarFallback>
                   </Avatar>
                   <div className='flex-1'>
@@ -245,7 +246,7 @@ export default function ProfilePage() {
               <div key={media} className='aspect-square relative rounded-md overflow-hidden'>
                 <Image
                   fill
-                  src={`/placeholder.svg?text=Media ${media}`}
+                  src={`https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg?text=Media ${media}`}
                   alt={`Media ${media}`}
                   className='object-cover'
                 />

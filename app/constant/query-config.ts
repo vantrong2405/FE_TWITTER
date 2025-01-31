@@ -1,4 +1,4 @@
 export const pagination = {
-  LIMIT: 1,
+  LIMIT: 10,
   PAGE: 1
 }
