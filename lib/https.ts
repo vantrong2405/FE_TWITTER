@@ -12,6 +12,7 @@ import {
 import { HttpStatusCode } from '../app/constant/httpStatusCode.enum'
 import { isAxiosExpiredTokenError, RefreshTokenResponse } from './axios.validate'
 import { pathUrl } from '@/app/constant/path'
+import configProject from '@/app/config/configService'
 
 class Http {
   instance: AxiosInstance
@@ -21,7 +22,7 @@ class Http {
     this.accessToken = getAccessTokenFromLS()
     this.refreshToken = getRefreshTokenFromLS()
     this.instance = axios.create({
-      baseURL: process.env.NEXT_PUBLIC_BACKEND_END_POINT,
+      baseURL: configProject.NEXT_PUBLIC_BACKEND_END_POINT,
       timeout: 1000 * 10,
       headers: {
         'Content-Type': 'application/json',

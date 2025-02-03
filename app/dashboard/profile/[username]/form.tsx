@@ -10,32 +10,88 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ChangePasswordDialog } from './dialog'
 import { Icons } from '@/components/ui/icon'
 import { useParams } from 'next/navigation'
-import { useGetProfile } from '@/app/hook/user/useGetProfile'
 import { useStoreLocal } from '@/app/store/useStoreLocal'
 import { EditProfileDialog } from '../../home/dialog'
 import { getFirstLetter, validateUrl } from '@/app/utils/utils'
+import { useGetProfile } from '@/app/hook/user/usegetProfile'
+import { EditImageDialog } from './EditImageDialog'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useUpdateProfile } from '@/app/hook/user/useUpdateProfile'
 
 export default function ProfilePage() {
   const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const { username } = useParams()
-  const { profile, addChat } = useStoreLocal()
-  const { data: currentUser } = useGetProfile(username as string)
+  const { addChat, profile } = useStoreLocal()
+  const { data: currentUser, isLoading } = useGetProfile(username as string)
+  const [isAvatarDialogOpen, setIsAvatarDialogOpen] = useState(false)
+  const [isCoverDialogOpen, setIsCoverDialogOpen] = useState(false)
+  const { mutateUpdateProfile, isPendingUpdateProfile } = useUpdateProfile()
+  const [isTab, setIsTab] = useState<'url' | 'upload'>('upload')
+  const handleAvatarSave = async (imageFile: File | null, imageUrl: string) => {
+    try {
+      if (isTab === 'upload' && imageFile) {
+        mutateUpdateProfile({ avatar: imageUrl })
+      } else if (isTab === 'url' && imageUrl) {
+        mutateUpdateProfile({ avatar: imageUrl })
+      } else {
+        console.warn('No valid image selected.')
+        return
+      }
+
+      console.log('Updating avatar with:', isTab, imageUrl)
+    } catch (error) {
+      console.error('Failed to update avatar:', error)
+    }
+  }
+
+  const handleCoverSave = async (imageFile: File | null, imageUrl: string) => {
+    try {
+      if (isTab === 'upload' && imageFile) {
+        mutateUpdateProfile({ cover_photo: imageUrl })
+      } else if (isTab === 'url' && imageUrl) {
+        imageUrl = imageUrl
+        mutateUpdateProfile({ cover_photo: imageUrl })
+      } else {
+        console.warn('No valid cover photo selected.')
+        return
+      }
+
+      console.log('Updating cover photo with:', isTab, imageUrl)
+    } catch (error) {
+      console.error('Failed to update cover photo:', error)
+    }
+  }
+
   const isOwner = profile?.username === currentUser?.username
-  const coverPhotoUrl =
-    validateUrl(currentUser?.cover_photo ?? '') ||
-    'https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg'
-  const avatarUrl = validateUrl(currentUser?.avatar ?? '')
+
   return (
     <div className='container mx-auto p-4'>
-      {/* Card Profile */}
-      <Card className='w-full'>
+      <Card className='w-full overflow-hidden'>
         <CardContent className='p-0'>
           {/* Cover Photo */}
-          <div className='relative h-48 sm:h-64 overflow-hidden rounded-t-lg'>
-            <Image src={coverPhotoUrl} alt='Profile cover' className='object-cover' fill />
+          <div className='relative h-48 sm:h-64 overflow-hidden'>
+            {isLoading ? (
+              <Skeleton className='h-full w-full' />
+            ) : (
+              <Image
+                fill
+                src={validateUrl(
+                  currentUser?.cover_photo ||
+                    'https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg'
+                )}
+                alt='Profile cover'
+                className='object-cover'
+                priority
+              />
+            )}
             {isOwner && (
-              <Button size='icon' variant='secondary' className='absolute top-4 right-4 rounded-full'>
+              <Button
+                size='icon'
+                variant='secondary'
+                className='absolute top-4 right-4 rounded-full'
+                onClick={() => setIsCoverDialogOpen(true)}
+              >
                 <Icons.camera className='h-4 w-4' />
               </Button>
             )}
@@ -46,28 +102,49 @@ export default function ProfilePage() {
               {/* Avatar and Details */}
               <div className='flex flex-col items-center sm:items-start mb-4 sm:mb-0'>
                 <div className='relative -mt-24 mb-4'>
-                  <Avatar className='w-32 h-32 border-4 border-background'>
-                    <AvatarImage src={avatarUrl} alt={currentUser?.username ?? 'Avatar'} />
-                    <AvatarFallback>{getFirstLetter(currentUser?.name ?? '')}</AvatarFallback>
-                  </Avatar>
+                  {isLoading ? (
+                    <Skeleton className='w-32 h-32 rounded-full' />
+                  ) : (
+                    <Avatar className='w-32 h-32 border-4 border-background'>
+                      {currentUser?.avatar ? (
+                        <AvatarImage src={currentUser.avatar} alt={currentUser.name || '@johndoe'} />
+                      ) : (
+                        <AvatarFallback>{getFirstLetter(currentUser?.name ?? 'Anonymous')}</AvatarFallback>
+                      )}
+                    </Avatar>
+                  )}
                   {isOwner && (
-                    <Button size='icon' variant='secondary' className='absolute bottom-0 right-0 rounded-full'>
+                    <Button
+                      size='icon'
+                      variant='secondary'
+                      className='absolute bottom-0 right-0 rounded-full'
+                      onClick={() => setIsAvatarDialogOpen(true)}
+                    >
                       <Icons.pencil className='h-4 w-4' />
                     </Button>
                   )}
                 </div>
-                <h1 className='text-2xl font-bold'>{currentUser?.name ?? 'Unknown User'}</h1>
-                <p className='text-muted-foreground'>@{currentUser?.username ?? 'unknown'}</p>
+                {isLoading ? (
+                  <div className='space-y-2'>
+                    <Skeleton className='h-8 w-40' />
+                    <Skeleton className='h-4 w-32' />
+                  </div>
+                ) : (
+                  <>
+                    <h1 className='text-2xl font-bold'>{currentUser?.name ?? 'Unknown User'}</h1>
+                    <p className='text-muted-foreground'>@{currentUser?.username ?? 'unknown'}</p>
+                  </>
+                )}
               </div>
               {/* Buttons */}
               <div className='flex flex-wrap justify-center sm:justify-end gap-2'>
                 {!isOwner ? (
                   <>
-                    <Button variant='outline' onClick={(e) => addChat(currentUser)}>
+                    <Button variant='outline' onClick={() => addChat(currentUser)}>
                       <Icons.messageCircle className='mr-2 h-4 w-4' />
                       Message
                     </Button>
-                    <Button variant='blueCol'>
+                    <Button variant='primary'>
                       <Icons.userPlus className='mr-2 h-4 w-4' />
                       Follow
                     </Button>
@@ -86,32 +163,46 @@ export default function ProfilePage() {
               </div>
             </div>
             {/* Additional Info */}
-            <div className='mt-4 flex flex-wrap gap-4 text-sm text-muted-foreground'>
-              <div className='flex items-center'>
-                <Icons.mapPin className='mr-1 h-4 w-4' />
-                {currentUser?.location ?? 'Unknown Location'}
+            {isLoading ? (
+              <div className='mt-4 space-y-2'>
+                <Skeleton className='h-4 w-full' />
+                <Skeleton className='h-4 w-3/4' />
               </div>
-              {currentUser?.website && (
-                <div className='flex items-center'>
-                  <Icons.linkIcon className='mr-1 h-4 w-4' />
-                  <a href={currentUser.website} target='_blank' rel='noopener noreferrer' className='hover:underline'>
-                    {currentUser.website}
-                  </a>
+            ) : (
+              <>
+                <div className='mt-4 flex flex-wrap gap-4 text-sm text-muted-foreground'>
+                  <div className='flex items-center'>
+                    <Icons.mapPin className='mr-1 h-4 w-4' />
+                    {currentUser?.location ?? 'Unknown Location'}
+                  </div>
+                  {currentUser?.website && (
+                    <div className='flex items-center'>
+                      <Icons.link className='mr-1 h-4 w-4' />
+                      <a
+                        href={currentUser.website}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='hover:underline'
+                      >
+                        {currentUser.website}
+                      </a>
+                    </div>
+                  )}
+                  <div className='flex items-center'>
+                    <Icons.calendarDays className='mr-1 h-4 w-4' />
+                    Joined {new Date(currentUser?.createdAt ?? '').toLocaleDateString() ?? 'Unknown Date'}
+                  </div>
                 </div>
-              )}
-              <div className='flex items-center'>
-                <Icons.calendarDays className='mr-1 h-4 w-4' />
-                Joined {new Date(currentUser?.createdAt ?? '').toLocaleDateString() ?? 'Unknown Date'}
-              </div>
-            </div>
-            <p className='mt-4'>{currentUser?.bio ?? 'No bio available.'}</p>
-            <div className='mt-4 flex space-x-2'>
-              <Badge variant='secondary'>
-                <Icons.user className='mr-1 h-4 w-4' />
-                {currentUser?.twitter_circles?.length ?? 0} followers
-              </Badge>
-              <Badge variant='secondary'>500 following</Badge>
-            </div>
+                <p className='mt-4'>{currentUser?.bio ?? 'No bio available.'}</p>
+                <div className='mt-4 flex space-x-2'>
+                  <Badge variant='secondary'>
+                    <Icons.user className='mr-1 h-4 w-4' />
+                    {currentUser?.twitter_circles?.length ?? 0} followers
+                  </Badge>
+                  <Badge variant='secondary'>500 following</Badge>
+                </div>
+              </>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -130,7 +221,10 @@ export default function ProfilePage() {
               <CardContent className='pt-6'>
                 <div className='flex items-start space-x-4'>
                   <Avatar>
-                    <AvatarImage src='/placeholder.svg' alt='@janedoe' />
+                    <AvatarImage
+                      src='https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg'
+                      alt='@janedoe'
+                    />
                     <AvatarFallback>JD</AvatarFallback>
                   </Avatar>
                   <div className='flex-1'>
@@ -151,9 +245,9 @@ export default function ProfilePage() {
             {[1, 2, 3, 4].map((media) => (
               <div key={media} className='aspect-square relative rounded-md overflow-hidden'>
                 <Image
-                  src={`/placeholder.svg?text=Media ${media}`}
-                  alt={`Media ${media}`}
                   fill
+                  src={`https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg?text=Media ${media}`}
+                  alt={`Media ${media}`}
                   className='object-cover'
                 />
               </div>
@@ -174,10 +268,27 @@ export default function ProfilePage() {
         </TabsContent>
       </Tabs>
 
-      {/* Change Password Dialog */}
       <ChangePasswordDialog open={isPasswordDialogOpen} onOpenChange={setIsPasswordDialogOpen} />
+      <EditProfileDialog isOpen={isEditDialogOpen} onClose={() => setIsEditDialogOpen(false)} user={currentUser} />
+      <EditImageDialog
+        isOpen={isAvatarDialogOpen}
+        onClose={() => setIsAvatarDialogOpen(false)}
+        onSave={handleAvatarSave}
+        title='Edit Avatar'
+        currentImageUrl={currentUser?.avatar}
+        setIsTab={setIsTab}
+        isPendingUpdateProfile={isPendingUpdateProfile}
+      />
 
-      <EditProfileDialog isOpen={isEditDialogOpen} onClose={() => setIsEditDialogOpen(false)} user={profile} />
+      <EditImageDialog
+        isOpen={isCoverDialogOpen}
+        onClose={() => setIsCoverDialogOpen(false)}
+        onSave={handleCoverSave}
+        title='Edit Cover Photo'
+        currentImageUrl={currentUser?.cover_photo}
+        setIsTab={setIsTab}
+        isPendingUpdateProfile={isPendingUpdateProfile}
+      />
     </div>
   )
 }

@@ -13,8 +13,6 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const access_token = searchParams.get('access_token')
     const refresh_token = searchParams.get('refresh_token')
-    const new_user = searchParams.get('new_user')
-    const verify = searchParams.get('verify')
     if (access_token && refresh_token) {
       setAccessTokenToLS(access_token)
       setRefreshTokenToLS(refresh_token)

@@ -1,6 +1,6 @@
 import { useStoreLocal } from '@/app/store/useStoreLocal'
 import React from 'react'
-import ChatBox from '../chat/chat'
+import ChatBox from './chat'
 
 export const ChatContainer = () => {
   const { openChats, removeChat } = useStoreLocal()

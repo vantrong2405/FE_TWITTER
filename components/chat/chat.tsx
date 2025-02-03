@@ -6,13 +6,17 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { getAccessTokenFromLS } from '@/app/utils/utils'
 import socket from '@/app/utils/socket'
 import { Button } from '@/components/ui/button'
-import { SendHorizontal, X, MoreVertical, Phone, Video } from 'lucide-react'
+import { SendHorizontal, Video } from 'lucide-react'
 import { Input } from '@/components/ui/input'
-import type { User } from '@/app/type/user.type'
 import { useStoreLocal } from '@/app/store/useStoreLocal'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import configProject from '@/app/config/configService'
+import { User } from '@/app/types/user.i'
+import { Icons } from '../ui/icon'
+import Link from 'next/link'
+import { pathUrl } from '@/app/constant/path'
 
 const LIMIT = 10
 const PAGE = 1
@@ -98,7 +102,7 @@ export default function ChatBox({ receiver, onClose }: ChatBoxProps) {
     if (receiver?._id) {
       axios
         .get(`/conversations/receiver/${receiver._id}`, {
-          baseURL: process.env.VITE_API_URL,
+          baseURL: configProject.NEXT_PUBLIC_VITE_API_URL,
           headers: {
             Authorization: `Bearer ${localStorage.getItem('access_token')}`
           },
@@ -126,10 +130,12 @@ export default function ChatBox({ receiver, onClose }: ChatBoxProps) {
       {/* Header */}
       <div className='flex items-center justify-between p-4  border-b'>
         <div className='flex items-center space-x-3'>
-          <Avatar className='h-10 w-10'>
-            <AvatarImage src={receiver.avatar} alt={receiver.name || 'User'} />
-            <AvatarFallback>{receiver.name?.charAt(0).toUpperCase() || '?'}</AvatarFallback>
-          </Avatar>
+          <Link href={pathUrl.profile + receiver?.username} passHref>
+            <Avatar className='h-10 w-10'>
+              <AvatarImage src={receiver.avatar} alt={receiver.name || 'User'} />
+              <AvatarFallback>{receiver.name?.charAt(0).toUpperCase() || '?'}</AvatarFallback>
+            </Avatar>
+          </Link>
           <div>
             <h3 className='font-semibold '>{receiver.name || 'Unknown User'}</h3>
             <p className='text-xs '>@{receiver.username || ''}</p>
@@ -139,8 +145,8 @@ export default function ChatBox({ receiver, onClose }: ChatBoxProps) {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant='ghost' size='icon' className=''>
-                  <Phone className='h-5 w-5' />
+                <Button variant='ghost' size='icon'>
+                  <Video className='h-5 w-5' />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -151,36 +157,12 @@ export default function ChatBox({ receiver, onClose }: ChatBoxProps) {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant='ghost' size='icon' className=''>
-                  <Video className='h-5 w-5' />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Video call</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant='ghost' size='icon' className=''>
-                  <MoreVertical className='h-5 w-5' />
+                <Button variant='ghost' size='icon' onClick={onClose}>
+                  <Icons.x className='h-5 w-5' />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
                 <p>More options</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant='ghost' size='icon' className='' onClick={onClose}>
-                  <X className='h-5 w-5' />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Close chat</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -194,16 +176,10 @@ export default function ChatBox({ receiver, onClose }: ChatBoxProps) {
             <div key={index} className={`flex ${message.sender_id === profile?._id ? 'justify-end' : 'justify-start'}`}>
               <div
                 className={`rounded-lg px-4 py-2 max-w-[80%] ${
-                  message.sender_id === profile?._id ? 'bg-blue-500' : ' text-gray-900'
+                  message.sender_id === profile?._id ? 'bg-blue-500' : 'bg-background'
                 }`}
               >
                 <p className='text-sm'>{message.content}</p>
-                <p className='text-xs mt-1 opacity-70'>
-                  {new Date(message.timestamp).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  })}
-                </p>
               </div>
             </div>
           ))}

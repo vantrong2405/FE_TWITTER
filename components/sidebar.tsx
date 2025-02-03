@@ -2,19 +2,17 @@ import { Button } from '@/components/ui/button'
 import { Icons } from './ui/icon'
 import Link from 'next/link'
 import { pathUrl } from '@/app/constant/path'
-import { HelpCircle, LogOut, MoreHorizontal, Settings } from 'lucide-react'
-import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar'
-import { getFirstLetter } from '@/app/utils/utils'
-import { User } from '@/app/type/user.type'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@radix-ui/react-dropdown-menu'
+import { User } from '@/app/types/user.i'
 
-export function Sidebar({ className, profile }: { className?: string; profile: User | null }) {
+export function Sidebar({
+  className,
+  profile,
+  openDialog
+}: {
+  className?: string
+  profile: User | null
+  openDialog: () => void
+}) {
   return (
     <aside className={className}>
       <nav className='space-y-2'>
@@ -85,7 +83,7 @@ export function Sidebar({ className, profile }: { className?: string; profile: U
           </Button>
         </Link>
       </nav>
-      <Button className='w-full mt-4' variant={'outline'}>
+      <Button className='w-full mt-4' variant={'outline'} onClick={openDialog}>
         <Icons.penSquare className='h-5 w-5 mr-2' />
         Tweet
       </Button>

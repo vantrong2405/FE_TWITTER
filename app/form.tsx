@@ -1,9 +1,9 @@
 'use client'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { getOauthGoogleUrl } from './hook/auth/useLoginOathGoogle'
 import { pathUrl } from './constant/path'
 import { useStoreLocal } from './store/useStoreLocal'
+import { getOauthGoogleUrl } from './hook/auth/useLoginOathGoogle'
 
 export default function GetStarted() {
   const oauthURL = getOauthGoogleUrl()

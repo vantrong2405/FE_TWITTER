@@ -10,7 +10,16 @@ function QueryProvider({ children }: React.PropsWithChildren) {
     if (typeof window !== 'undefined') setIsBrowser(true)
   }, [])
 
-  const [client] = useState(() => new QueryClient())
+  const [client] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            experimental_prefetchInRender: true
+          }
+        }
+      })
+  )
 
   if (!isBrowser) return null
   return <QueryClientProvider client={client}>{children}</QueryClientProvider>

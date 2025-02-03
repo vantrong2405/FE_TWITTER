@@ -1,8 +1,16 @@
-import http from '../../lib/http'
+import http from '@/lib/https'
 
 const friendApi = {
-  getFriend() {
+  getFriends() {
     return http.get('/users/get-friend')
+  },
+  getSuggestFriends(limit: number, page: number) {
+    return http.get(`/users/suggest-friends`, {
+      params: {
+        limit,
+        page
+      }
+    })
   },
   followFriend(body: { followed_user_id: string }) {
     return http.post(`/users/follow`, body)

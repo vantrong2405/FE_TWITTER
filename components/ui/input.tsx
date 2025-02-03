@@ -22,7 +22,7 @@ const Input = React.forwardRef<HTMLInputElement, Props>(
       classNameInput,
       name,
       required,
-      defaultValue, // Sử dụng defaultValue thay vì value
+      defaultValue,
       ...props
     },
     ref
