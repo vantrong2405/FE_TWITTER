@@ -2,9 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Icons } from '../ui/icon'
 import type { User } from '@/app/types/user.i'
@@ -30,12 +28,7 @@ export function UserProfile({ profile }: { profile: User | null }) {
           <div className='absolute inset-0 bg-gradient-to-t from-black/60 to-transparent' />
         </div>
         <CardContent className='relative px-6 pb-6'>
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className='flex flex-col md:flex-row md:items-end md:justify-between'
-          >
+          <div className='flex flex-col md:flex-row md:items-end md:justify-between'>
             <div className='flex flex-col md:flex-row md:items-end'>
               <Avatar className='h-32 w-32 border-4 border-white shadow-lg -mt-16 md:-mt-20 md:mr-6'>
                 {profile?.avatar ? (
@@ -50,12 +43,8 @@ export function UserProfile({ profile }: { profile: User | null }) {
                 <p className=''>@{profile?.username ?? ''}</p>
               </div>
             </div>
-          </motion.div>
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
+          </div>
+          <div>
             <p className='mt-6 '>{profile?.bio ?? ''}</p>
             <div className='mt-4 flex flex-wrap gap-4 text-sm'>
               <span className='flex items-center'>
@@ -81,7 +70,7 @@ export function UserProfile({ profile }: { profile: User | null }) {
                 5,678 <span className='font-normal'>Followers</span>
               </span>
             </div>
-          </motion.div>
+          </div>
         </CardContent>
       </Card>
       <EditProfileDialog isOpen={isEditDialogOpen} onClose={() => setIsEditDialogOpen(false)} user={profile} />

@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
-import friendApi from '../../apis/friend.api'
 import { queryKey } from '@/app/constant/query-key'
+import friendApi from '@/app/apis/friend.api'
 
-export function useGetFriends() {
+export function useGetSuggestFriends(limit: number, page: number) {
   const { data, refetch, isLoading, error } = useQuery({
-    queryKey: [queryKey.FRIENDS],
+    queryKey: [queryKey.FRIENDS, page],
     queryFn: async () => {
-      const response = await friendApi.getFriends()
+      const response = await friendApi.getSuggestFriends(limit, page)
       if (response?.data?.result) {
         return response.data.result
       }

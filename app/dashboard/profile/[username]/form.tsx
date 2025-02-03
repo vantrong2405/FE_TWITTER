@@ -22,7 +22,7 @@ export default function ProfilePage() {
   const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const { username } = useParams()
-  const { addChat } = useStoreLocal()
+  const { addChat, profile } = useStoreLocal()
   const { data: currentUser, isLoading } = useGetProfile(username as string)
   const [isAvatarDialogOpen, setIsAvatarDialogOpen] = useState(false)
   const [isCoverDialogOpen, setIsCoverDialogOpen] = useState(false)
@@ -63,7 +63,7 @@ export default function ProfilePage() {
     }
   }
 
-  const isOwner = currentUser?.username === currentUser?.username
+  const isOwner = profile?.username === currentUser?.username
 
   return (
     <div className='container mx-auto p-4'>
@@ -144,7 +144,7 @@ export default function ProfilePage() {
                       <Icons.messageCircle className='mr-2 h-4 w-4' />
                       Message
                     </Button>
-                    <Button variant='default'>
+                    <Button variant='primary'>
                       <Icons.userPlus className='mr-2 h-4 w-4' />
                       Follow
                     </Button>

@@ -14,7 +14,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select'
+import { Select, SelectItem } from '@/components/ui/select'
 import { DatePicker } from '@/components/ui/date-picker'
 import { useUpdateProfile } from '@/app/hook/user/useUpdateProfile'
 import { useUpdateProfileFormSchema } from '@/app/schemas/updateProfile.schema'
