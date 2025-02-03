@@ -1,5 +1,5 @@
-import http from '@/lib/http'
-import { IValidateUpdateProfile } from '../schemas/updateProfile.schema'
+import http from '@/lib/https'
+import { typeBodyUpdateProfile } from '../schemas/updateProfile.schema'
 
 export const userApi = {
   changePassword(body: { old_password: string; new_password: string; confirm_new_password: string }) {
@@ -8,7 +8,7 @@ export const userApi = {
   getMe() {
     return http.get('/users/me')
   },
-  updateProfile(body: IValidateUpdateProfile) {
+  updateProfile(body: typeBodyUpdateProfile) {
     return http.patch('/users/me', body)
   },
   getProfile(username: string) {

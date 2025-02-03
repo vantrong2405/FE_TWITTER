@@ -2,47 +2,37 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Icons } from './icon'
-import type { User } from '@/app/type/user.type'
+import { Icons } from '../ui/icon'
+import type { User } from '@/app/types/user.i'
 import { formatDate, getFirstLetter, validateUrl } from '@/app/utils/utils'
 import { EditProfileDialog } from '@/app/dashboard/home/dialog'
 
 export function UserProfile({ profile }: { profile: User | null }) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const coverPhotoUrl =
-    validateUrl(profile?.cover_photo ?? '') ||
-    'https://img.freepik.com/free-vector/gradient-particle-wave-background_23-2150517309.jpg'
-  const avatarUrl = validateUrl(profile?.avatar ?? '')
 
   return (
     <>
       <Card className='mb-6 overflow-hidden shadow-lg'>
         <div className='relative h-64'>
           <Image
-            src={coverPhotoUrl}
+            src={validateUrl(
+              profile?.cover_photo ||
+                'https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg'
+            )}
             alt='Profile banner'
             fill
-            style={{ objectFit: 'cover' }}
-            className='transition-opacity duration-300 ease-in-out'
+            className='transition-opacity duration-300 ease-in-out object-cover'
           />
-
           <div className='absolute inset-0 bg-gradient-to-t from-black/60 to-transparent' />
         </div>
         <CardContent className='relative px-6 pb-6'>
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className='flex flex-col md:flex-row md:items-end md:justify-between'
-          >
+          <div className='flex flex-col md:flex-row md:items-end md:justify-between'>
             <div className='flex flex-col md:flex-row md:items-end'>
               <Avatar className='h-32 w-32 border-4 border-white shadow-lg -mt-16 md:-mt-20 md:mr-6'>
                 {profile?.avatar ? (
-                  <AvatarImage src={avatarUrl} alt={profile?.name || '@johndoe'} />
+                  <AvatarImage src={profile?.avatar ?? ''} alt={profile?.name || '@johndoe'} />
                 ) : (
                   <AvatarFallback>{getFirstLetter(profile?.name ?? 'Anonymous')}</AvatarFallback>
                 )}
@@ -53,15 +43,8 @@ export function UserProfile({ profile }: { profile: User | null }) {
                 <p className=''>@{profile?.username ?? ''}</p>
               </div>
             </div>
-            <Button variant='outline' onClick={() => setIsEditDialogOpen(true)} className='mt-4 md:mt-0'>
-              Edit Profile
-            </Button>
-          </motion.div>
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
+          </div>
+          <div>
             <p className='mt-6 '>{profile?.bio ?? ''}</p>
             <div className='mt-4 flex flex-wrap gap-4 text-sm'>
               <span className='flex items-center'>
@@ -87,7 +70,7 @@ export function UserProfile({ profile }: { profile: User | null }) {
                 5,678 <span className='font-normal'>Followers</span>
               </span>
             </div>
-          </motion.div>
+          </div>
         </CardContent>
       </Card>
       <EditProfileDialog isOpen={isEditDialogOpen} onClose={() => setIsEditDialogOpen(false)} user={profile} />

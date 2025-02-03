@@ -20,6 +20,16 @@ export const updateProfileSchema = userSchema.pick([
   'cover_photo'
 ])
 
+export type typeBodyUpdateProfile = {
+  name?: string
+  website?: string
+  bio?: string
+  cover_photo?: string
+  location?: 'Hà nội' | 'Đà nẵng' | 'Hồ chí minh'
+  date_of_birth?: string
+  avatar?: string
+}
+
 export const useUpdateProfileFormSchema = () => {
   const {
     register,

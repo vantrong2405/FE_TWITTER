@@ -13,24 +13,17 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Icons } from './ui/icon'
-import { User } from '@/app/type/user.type'
 import { getFirstLetter, getRefreshTokenFromLS } from '@/app/utils/utils'
 import { ModeToggle } from './ui/toggle'
-import { IValidateLogout } from '@/app/schemas/logout.schema'
-import { AxiosResponse } from 'axios'
-import { UseMutateFunction } from '@tanstack/react-query'
 import Link from 'next/link'
 import { pathUrl } from '@/app/constant/path'
+import { useLogout } from '@/app/hook/auth/useLogout'
+import { useStoreLocal } from '@/app/store/useStoreLocal'
+import { AvatarImage } from '@radix-ui/react-avatar'
 
-export function Header({
-  profile,
-  mutateLogout,
-  isPendingLogout
-}: {
-  profile: User | null
-  mutateLogout: UseMutateFunction<AxiosResponse<any, any>, Error, IValidateLogout, unknown>
-  isPendingLogout: boolean
-}) {
+export function Header() {
+  const { profile } = useStoreLocal()
+  const { mutateLogout, isPendingLogout } = useLogout()
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const handleSubmit = () => {
     const refresh_token = getRefreshTokenFromLS() || ''
@@ -38,10 +31,12 @@ export function Header({
   }
 
   return (
-    <header className='shadow-sm sticky top-0 z-10'>
+    <header className='shadow-sm sticky top-0 z-20 bg-background'>
       <div className='container mx-auto px-4 py-3 flex items-center justify-between'>
         <div className='flex items-center space-x-4'>
-          <Icons.twitter className='h-8 w-8 text-blue-500' />
+          <Link href={pathUrl.home}>
+            <Icons.twitter className='h-8 w-8 text-blue-500' />
+          </Link>
           <Input
             type='search'
             placeholder='Search Twitter'
@@ -52,26 +47,40 @@ export function Header({
           </Button>
         </div>
         <nav className='flex items-center space-x-1 md:space-x-4'>
-          <Button variant='ghost' size='sm'>
-            <Icons.home className='h-5 w-5' />
-            <span className='hidden md:inline ml-2'>Home</span>
-          </Button>
-          <Button variant='ghost' size='sm'>
-            <Icons.bell className='h-5 w-5' />
-            <span className='hidden md:inline ml-2'>Notifications</span>
-          </Button>
-          <Button variant='ghost' size='sm'>
-            <Icons.mail className='h-5 w-5' />
-            <span className='hidden md:inline ml-2'>Messages</span>
-          </Button>
+          <Link href={pathUrl.home}>
+            <Button variant='ghost' size='sm'>
+              <Icons.home className='h-5 w-5' />
+              <span className='hidden md:inline ml-2'>Home</span>
+            </Button>
+          </Link>
+          <Link href={pathUrl.notifications}>
+            <Button variant='ghost' size='sm'>
+              <Icons.bell className='h-5 w-5' />
+              <span className='hidden md:inline ml-2'>Notifications</span>
+            </Button>
+          </Link>
+          <Link href={pathUrl.message}>
+            <Button variant='ghost' size='sm'>
+              <Icons.mail className='h-5 w-5' />
+              <span className='hidden md:inline ml-2'>Messages</span>
+            </Button>
+          </Link>
           <ModeToggle />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant='outline' size='icon' className='rounded-full'>
                 <Avatar>
-                  <AvatarFallback className='cursor-pointer hover:opacity-70 border'>
-                    {getFirstLetter(profile?.name ?? '')}
-                  </AvatarFallback>
+                  {profile?.avatar ? (
+                    <AvatarImage
+                      className='cursor-pointer hover:opacity-70 border overflow-hidden rounded-full'
+                      src={profile.avatar}
+                      alt={profile.name || '@johndoe'}
+                    />
+                  ) : (
+                    <AvatarFallback className='cursor-pointer hover:opacity-70 border overflow-hidden rounded-full'>
+                      {getFirstLetter(profile?.name ?? 'Anonymous')}
+                    </AvatarFallback>
+                  )}
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>

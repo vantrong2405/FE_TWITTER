@@ -7,7 +7,7 @@ import { queryKey } from '@/app/constant/query-key'
 export function useGetMe() {
   const { setProfile } = useStoreLocal()
   const { data, refetch, isLoading, error } = useQuery({
-    queryKey: [queryKey.me],
+    queryKey: [queryKey.ME],
     queryFn: async () => {
       const response = await userApi.getMe()
       if (response?.data?.result) {

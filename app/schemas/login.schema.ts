@@ -8,6 +8,7 @@ export interface IValidateLogin {
 }
 
 export const loginSchema = schema.pick(['email', 'password'])
+
 export const useLoginFormSchema = () => {
   const {
     register,

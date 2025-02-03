@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import type { User } from '@/app/type/user.type'
+import type { User } from '@/app/types/user.i'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -14,7 +14,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select'
+import { Select, SelectItem } from '@/components/ui/select'
 import { DatePicker } from '@/components/ui/date-picker'
 import { useUpdateProfile } from '@/app/hook/user/useUpdateProfile'
 import { useUpdateProfileFormSchema } from '@/app/schemas/updateProfile.schema'
@@ -36,8 +36,11 @@ export function EditProfileDialog({ isOpen, onClose, user }: EditProfileDialogPr
   }, [user])
 
   const { register, handleSubmit, setValue, errors } = useUpdateProfileFormSchema()
-  const { mutateUpdateProfile, isPendingUpdateProfile } = useUpdateProfile(onClose)
-  const onSubmit = handleSubmit((data) => mutateUpdateProfile(data))
+  const { mutateUpdateProfile, isPendingUpdateProfile } = useUpdateProfile()
+  const onSubmit = handleSubmit((data) => {
+    mutateUpdateProfile(data)
+    onClose()
+  })
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

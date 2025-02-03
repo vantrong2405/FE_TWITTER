@@ -18,7 +18,7 @@ interface MessageBubbleProps {
 export function MessageBubble({ message, timestamp, isUser, avatar, name, status, reactions }: MessageBubbleProps) {
   return (
     <div className={cn('flex gap-3 max-w-[85%]', isUser ? 'ml-auto flex-row-reverse' : '')}>
-      <Avatar className='h-8 w-8 border-2 border-white shadow-sm'>
+      <Avatar className='h-8 w-8 border-2  shadow-sm'>
         <AvatarImage src={avatar} />
         <AvatarFallback>{name.slice(0, 2)}</AvatarFallback>
       </Avatar>
@@ -32,19 +32,19 @@ export function MessageBubble({ message, timestamp, isUser, avatar, name, status
             className={cn(
               'p-3 shadow-sm',
               isUser
-                ? 'bg-gradient-to-br from-indigo-500 to-purple-500 text-white rounded-tr-none'
-                : 'bg-gradient-to-br from-gray-50 to-gray-100 rounded-tl-none'
+                ? 'bg-gradient-to-br from-indigo-500 to-purple-500  rounded-tr-none'
+                : 'bg-gradient-to-br rounded-tl-none'
             )}
           >
             <p className='leading-relaxed'>{message}</p>
-            <span className={cn('text-xs mt-1 block', isUser ? 'text-indigo-100' : 'text-gray-500')}>{timestamp}</span>
+            <span className={cn('text-xs mt-1 block')}>{timestamp}</span>
           </Card>
           {reactions && reactions.length > 0 && (
             <div className='flex gap-1'>
               {reactions.map((reaction, index) => (
                 <span
                   key={index}
-                  className='inline-flex items-center gap-1 rounded-full bg-white px-2 py-1 text-xs shadow-sm border'
+                  className='inline-flex items-center gap-1 rounded-full  px-2 py-1 text-xs shadow-sm border'
                 >
                   {reaction.emoji} {reaction.count}
                 </span>

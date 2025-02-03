@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { User } from '../type/user.type'
+import { User } from '../types/user.i'
 import { getProfileFromLS } from '../utils/utils'
 
 type Store = {

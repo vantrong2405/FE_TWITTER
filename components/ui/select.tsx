@@ -57,7 +57,6 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
             <SelectPrimitive.Icon asChild></SelectPrimitive.Icon>
           </SelectTrigger>
 
-          {/* Content */}
           <SelectContent className={cn('relative z-50', classNameContent)}>
             <SelectScrollUpButton />
             <SelectPrimitive.Viewport className='p-1'>{children}</SelectPrimitive.Viewport>
@@ -65,7 +64,6 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
           </SelectContent>
         </SelectPrimitive.Root>
 
-        {/* Hiển thị lỗi */}
         {errorMessage && <div className='text-red-500 text-sm mt-1'>{errorMessage}</div>}
       </div>
     )
@@ -73,8 +71,6 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
 )
 
 Select.displayName = 'Select'
-
-// Các thành phần bổ sung
 
 const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,

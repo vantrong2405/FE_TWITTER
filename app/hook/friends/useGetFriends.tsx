@@ -4,8 +4,14 @@ import { queryKey } from '@/app/constant/query-key'
 
 export function useGetFriends() {
   const { data, refetch, isLoading, error } = useQuery({
-    queryKey: [queryKey.friends],
-    queryFn: friendApi.getFriend
+    queryKey: [queryKey.FRIENDS],
+    queryFn: async () => {
+      const response = await friendApi.getFriends()
+      if (response?.data?.result) {
+        return response.data.result
+      }
+      return response
+    }
   })
 
   return { data, refetch, isLoading, error }
