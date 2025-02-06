@@ -21,9 +21,10 @@ import { useUpdateProfile } from '@/app/hooks/user/useUpdateProfile'
 export default function ProfilePage() {
   const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const { username } = useParams()
+  const params = useParams()
+  const username = params?.username as string
   const { addChat, profile } = useStoreLocal()
-  const { data: currentUser, isLoading } = useGetProfile(username as string)
+  const { data: currentUser, isLoading } = useGetProfile(username)
   const [isAvatarDialogOpen, setIsAvatarDialogOpen] = useState(false)
   const [isCoverDialogOpen, setIsCoverDialogOpen] = useState(false)
   const { mutateUpdateProfile, isPendingUpdateProfile } = useUpdateProfile()

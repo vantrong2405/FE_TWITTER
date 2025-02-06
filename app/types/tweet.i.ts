@@ -8,7 +8,7 @@ export interface Hashtag {
 
 export interface Media {
   url: string
-  type: number
+  type: number // 0: image, 1: video
 }
 
 export interface Tweet {
@@ -31,4 +31,19 @@ export interface Tweet {
   retweet_count: number
   comment_count: number
   quote_count: number
+}
+
+export interface MediaType {
+  url: string
+  type: number // 0: image, 1: video
+}
+
+export interface CreateTweetBody {
+  type: number
+  audience: number
+  content: string
+  hashtags: string[]
+  mentions: string[]
+  medias: MediaType[]
+  parent_id?: string
 }
