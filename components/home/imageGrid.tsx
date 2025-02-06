@@ -3,10 +3,9 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { ImageViewer } from './imageViewer'
-import { Media } from '@/app/types/tweet.i'
 
 interface ImageGridProps {
-  medias: Media[]
+  medias: { url: string; type?: number }[]
 }
 
 export function ImageGrid({ medias }: ImageGridProps) {
@@ -42,29 +41,9 @@ export function ImageGrid({ medias }: ImageGridProps) {
     }
   }
 
-  const renderMedia = (media: Media, index: number) => {
-    if (media.type === 0) {
-      // Image
-      return (
-        <Image
-          fill
-          priority
-          src={media.url}
-          alt={`Tweet media ${index + 1}`}
-          className='object-cover cursor-pointer hover:opacity-90 transition-opacity'
-          onClick={() => setSelectedImageIndex(index)}
-        />
-      )
-    } else if (media.type === 1) {
-      // Video
-      return (
-        <div className='relative w-full h-full'>
-          <video src={media.url} className='w-full h-full object-cover' controls crossOrigin='anonymous' playsInline>
-            <source src={media.url} type='video/mp4' />
-            Your browser does not support the video tag.
-          </video>
-        </div>
-      )
+  const handleMediaClick = (index: number) => {
+    if (!medias[index].type || medias[index].type === 0) {
+      setSelectedImageIndex(index)
     }
   }
 
@@ -74,13 +53,28 @@ export function ImageGrid({ medias }: ImageGridProps) {
         {medias.slice(0, 6).map((media, index) => (
           <div
             key={index}
-            className={`relative ${getImageHeight()} ${medias.length === 3 && index === 0 ? 'row-span-2' : ''}`}
+            className={`relative ${getImageHeight()} ${medias.length === 2 && index === 0 ? 'row-span-2' : ''}`}
           >
-            {renderMedia(media, index)}
+            {media.type === 1 ? (
+              <video src={media.url} className='w-full h-full object-cover' controls crossOrigin='anonymous' />
+            ) : (
+              <Image
+                fill
+                sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+                priority
+                src={
+                  media.url ||
+                  'https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg'
+                }
+                alt={`Tweet media ${index + 1}`}
+                className='object-cover cursor-pointer hover:opacity-90 transition-opacity'
+                onClick={() => handleMediaClick(index)}
+              />
+            )}
             {index === 5 && medias.length > 6 && (
               <div
                 className='absolute inset-0 bg-black/50 flex items-center justify-center cursor-pointer'
-                onClick={() => setSelectedImageIndex(5)}
+                onClick={() => handleMediaClick(5)}
               >
                 <span className='text-white text-xl font-bold'>+{medias.length - 6}</span>
               </div>
@@ -89,15 +83,12 @@ export function ImageGrid({ medias }: ImageGridProps) {
         ))}
       </div>
 
-      {/* Chỉ mở ImageViewer khi click vào ảnh (type === 0) */}
-      {selectedImageIndex !== null && medias[selectedImageIndex]?.type === 0 && (
-        <ImageViewer
-          images={medias.filter((media) => media.type === 0)} // Chỉ hiển thị ảnh trong viewer
-          initialIndex={selectedImageIndex}
-          open={selectedImageIndex !== null}
-          onClose={() => setSelectedImageIndex(null)}
-        />
-      )}
+      <ImageViewer
+        medias={medias}
+        initialIndex={selectedImageIndex ?? 0}
+        open={selectedImageIndex !== null}
+        onClose={() => setSelectedImageIndex(null)}
+      />
     </>
   )
 }
