@@ -75,7 +75,6 @@ export default function FormDashBoard() {
       >
         <UserProfile profile={profile} />
         <TweetComposer handleTweetCreated={handleTweetCreated} profile={profile} />
-        <NewsCarousel />
         <TweetList newTweet={newTweet} />
       </motion.main>
 

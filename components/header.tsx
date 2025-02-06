@@ -90,7 +90,7 @@ export function Header() {
           md:p-0
           space-y-2
           md:space-y-0
-          md:space-x-6
+          md:space-x-2
           items-start
           md:items-center
           shadow-lg
