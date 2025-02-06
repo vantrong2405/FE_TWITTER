@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useChangePassword } from '@/app/hook/auth/useChangePassword'
+import { useChangePassword } from '@/app/hooks/auth/useChangePassword'
 import { useChangePasswordFormSchema } from '@/app/schemas/changePassword.schema'
 
 interface ChangePasswordDialogProps {

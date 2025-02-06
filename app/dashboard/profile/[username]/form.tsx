@@ -10,20 +10,21 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ChangePasswordDialog } from './dialog'
 import { Icons } from '@/components/ui/icon'
 import { useParams } from 'next/navigation'
-import { useStoreLocal } from '@/app/store/useStoreLocal'
+import { useStoreLocal } from '@/app/stores/useStoreLocal'
 import { EditProfileDialog } from '../../home/dialog'
 import { getFirstLetter, validateUrl } from '@/app/utils/utils'
-import { useGetProfile } from '@/app/hook/user/usegetProfile'
+import { useGetProfile } from '@/app/hooks/user/usegetProfile'
 import { EditImageDialog } from './EditImageDialog'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useUpdateProfile } from '@/app/hook/user/useUpdateProfile'
+import { useUpdateProfile } from '@/app/hooks/user/useUpdateProfile'
 
 export default function ProfilePage() {
   const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const { username } = useParams()
+  const params = useParams()
+  const username = params?.username as string
   const { addChat, profile } = useStoreLocal()
-  const { data: currentUser, isLoading } = useGetProfile(username as string)
+  const { data: currentUser, isLoading } = useGetProfile(username)
   const [isAvatarDialogOpen, setIsAvatarDialogOpen] = useState(false)
   const [isCoverDialogOpen, setIsCoverDialogOpen] = useState(false)
   const { mutateUpdateProfile, isPendingUpdateProfile } = useUpdateProfile()
@@ -38,8 +39,6 @@ export default function ProfilePage() {
         console.warn('No valid image selected.')
         return
       }
-
-      console.log('Updating avatar with:', isTab, imageUrl)
     } catch (error) {
       console.error('Failed to update avatar:', error)
     }
@@ -56,8 +55,6 @@ export default function ProfilePage() {
         console.warn('No valid cover photo selected.')
         return
       }
-
-      console.log('Updating cover photo with:', isTab, imageUrl)
     } catch (error) {
       console.error('Failed to update cover photo:', error)
     }

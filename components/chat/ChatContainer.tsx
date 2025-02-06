@@ -1,4 +1,4 @@
-import { useStoreLocal } from '@/app/store/useStoreLocal'
+import { useStoreLocal } from '@/app/stores/useStoreLocal'
 import React from 'react'
 import ChatBox from './chat'
 

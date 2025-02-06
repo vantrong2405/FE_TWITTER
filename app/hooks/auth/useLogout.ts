@@ -1,7 +1,7 @@
 import authApi from '@/app/apis/auth.api'
 import { pathUrl } from '@/app/constant/path'
 import { IValidateLogout } from '@/app/schemas/logout.schema'
-import { useStoreLocal } from '@/app/store/useStoreLocal'
+import { useStoreLocal } from '@/app/stores/useStoreLocal'
 import { getRefreshTokenFromLS, clearLS, handleError } from '@/app/utils/utils'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'

@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label'
 import Link from 'next/link'
 import { pathUrl } from '@/app/constant/path'
 import { useLoginFormSchema } from '@/app/schemas/login.schema'
-import { useLogin } from '@/app/hook/auth/useLogin'
+import { useLogin } from '@/app/hooks/auth/useLogin'
 
 export function FormSignIn() {
   const { register, handleSubmit, errors } = useLoginFormSchema()

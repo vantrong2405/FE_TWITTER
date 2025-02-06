@@ -10,17 +10,17 @@ import { useEffect, useState } from 'react'
 import { redirect } from 'next/navigation'
 import { pathUrl } from '../../constant/path'
 import { ChatContainer } from '@/components/chat/ChatContainer'
-import { useFollowFriend } from '@/app/hook/friends/useFollowFriend'
-import { useGetMe } from '@/app/hook/user/useGetMe'
 import { TweetComposer } from '@/components/home/tweet-composer'
 import { Tweet } from '@/app/types/tweet.i'
-import { useGetSuggestFriends } from '@/app/hook/friends/useGetSuggestFriend'
 import { pagination } from '@/app/constant/query-config'
 import { TweetDialog } from '@/components/home/tweet-dialog'
 import { ContactsSidebar } from '@/components/home/contacts-slidebar'
 import { motion } from 'framer-motion'
-import { useGetFriends } from '@/app/hook/friends/useGetFriends'
-import { useStoreLocal } from '@/app/store/useStoreLocal'
+import { useStoreLocal } from '@/app/stores/useStoreLocal'
+import { useGetSuggestFriends } from '@/app/hooks/friends/useGetSuggestFriend'
+import { useGetFriends } from '@/app/hooks/friends/useGetFriends'
+import { useGetMe } from '@/app/hooks/user/useGetMe'
+import { useFollowFriend } from '@/app/hooks/friends/useFollowFriend'
 
 export default function FormDashBoard() {
   // state
@@ -34,7 +34,6 @@ export default function FormDashBoard() {
   // useQuery
   const { data: suggestFriends } = useGetSuggestFriends(pagination.LIMIT, pagination.PAGE)
   const { data: friends } = useGetFriends()
-  console.log('🚀 ~ FormDashBoard ~ friends:', friends)
   // hook
   const { data: profile } = useGetMe()
   const { mutateFollowFriend, isPendingFollowFriend } = useFollowFriend()
@@ -76,7 +75,6 @@ export default function FormDashBoard() {
       >
         <UserProfile profile={profile} />
         <TweetComposer handleTweetCreated={handleTweetCreated} profile={profile} />
-        <NewsCarousel />
         <TweetList newTweet={newTweet} />
       </motion.main>
 
@@ -86,7 +84,7 @@ export default function FormDashBoard() {
         transition={{ delay: 0.4, duration: 0.5 }}
         className='hidden xl:block w-1/4'
       >
-        <div className='sticky top-20 space-y-6'>
+        <div className='sticky top-20 space-y-6 max-h-[calc(100vh-6rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100'>
           <WhoToFollow
             suggestFriends={suggestFriends?.users || []}
             mutateFollowFriend={mutateFollowFriend}

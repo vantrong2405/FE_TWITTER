@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { FormSignIn } from './form-sign-in'
 import { FormSignUp } from './form-sign-up'
 import Link from 'next/link'
-import { getOauthGoogleUrl } from '@/app/hook/auth/useLoginOathGoogle'
+import { getOauthGoogleUrl } from '@/app/hooks/auth/useLoginOathGoogle'
 
 export default function FormAuth() {
   const oauthURL = getOauthGoogleUrl()

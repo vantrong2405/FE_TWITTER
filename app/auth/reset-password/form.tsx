@@ -8,12 +8,12 @@ import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import imgTweet from '../../assets/images/twitter.png'
 import { useResetPasswordFormSchema } from '@/app/schemas/resetPassword.schema'
-import { useResetPassword } from '@/app/hook/auth/useResetPassword'
+import { useResetPassword } from '@/app/hooks/auth/useResetPassword'
 import { Icons } from '@/components/ui/icon'
 export default function ResetPassword() {
   const { register, handleSubmit, errors } = useResetPasswordFormSchema()
   const searchParams = useSearchParams()
-  const token = searchParams.get('token') || ''
+  const token = searchParams?.get('token') || ''
   const { mutateResetPassword, isPendingResetPassword } = useResetPassword()
   const onSubmit = handleSubmit((data) => mutateResetPassword({ ...data, forgot_password_token: token }))
 
