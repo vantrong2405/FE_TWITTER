@@ -13,7 +13,7 @@ import { useStoreLocal } from '@/app/stores/useStoreLocal'
 import { useFileHandling } from '@/app/hooks/chat/useFileHandling'
 import { pagination } from '@/app/constant/query-config'
 import { useMessages } from '@/app/hooks/chat/useMessages'
-import { Message, MessageType } from '@/app/types/message.i'
+import { Message, MessageType } from '@/app/types/chat.i'
 
 export default function ChatBox({ receiver, onClose }: { receiver: User; onClose: () => void }) {
   const { profile } = useStoreLocal()

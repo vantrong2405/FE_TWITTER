@@ -4,7 +4,7 @@ import { getAccessTokenFromLS } from '@/app/utils/utils'
 import configProject from '@/app/config/configService'
 import { User } from '@/app/types/user.i'
 import { pagination } from '@/app/constant/query-config'
-import { Message } from '@/app/types/message.i'
+import { Message } from '@/app/types/chat.i'
 
 export const useMessages = (receiver: User, scrollToBottom: () => void) => {
   const [messages, setMessages] = useState<Message[]>([])

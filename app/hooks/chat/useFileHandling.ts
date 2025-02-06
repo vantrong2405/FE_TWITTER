@@ -1,16 +1,10 @@
 import { useState, useRef } from 'react'
-import { MessageType } from './useMessages'
 import { useUploadImage } from '@/app/hooks/medias/useUploadImage'
 import { useUploadVideo } from '@/app/hooks/medias/useUploadVideo'
+import { MessageType, typePreView } from '@/app/types/chat.i'
 
 export const useFileHandling = () => {
-  const [filePreview, setFilePreview] = useState<{
-    url: string
-    type: MessageType
-    file: File
-    name: string
-    size: number
-  } | null>(null)
+  const [filePreview, setFilePreview] = useState<typePreView>(null)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const videoInputRef = useRef<HTMLInputElement>(null)

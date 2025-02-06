@@ -11,3 +11,11 @@ export type Message = {
   file_name?: string
   file_size?: number
 }
+
+export type typePreView = {
+  url: string
+  type: MessageType
+  file: File
+  name: string
+  size: number
+} | null

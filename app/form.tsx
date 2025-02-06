@@ -29,7 +29,7 @@ export default function GetStarted() {
               {profile && profile.email ? (
                 <Link href={pathUrl.home}>
                   <Button variant='outline' className='relative w-full justify-center'>
-                    Get started - <b>{profile.email}</b>
+                    <b>{'Get started' + ' - ' + profile.email}</b>
                   </Button>
                 </Link>
               ) : (
