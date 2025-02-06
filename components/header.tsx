@@ -17,9 +17,9 @@ import { getFirstLetter, getRefreshTokenFromLS } from '@/app/utils/utils'
 import { ModeToggle } from './ui/toggle'
 import Link from 'next/link'
 import { pathUrl } from '@/app/constant/path'
-import { useLogout } from '@/app/hook/auth/useLogout'
-import { useStoreLocal } from '@/app/store/useStoreLocal'
 import { AvatarImage } from '@radix-ui/react-avatar'
+import { useStoreLocal } from '@/app/stores/useStoreLocal'
+import { useLogout } from '@/app/hooks/auth/useLogout'
 
 export function Header() {
   const { profile } = useStoreLocal()

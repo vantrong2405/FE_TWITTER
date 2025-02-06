@@ -10,13 +10,13 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ChangePasswordDialog } from './dialog'
 import { Icons } from '@/components/ui/icon'
 import { useParams } from 'next/navigation'
-import { useStoreLocal } from '@/app/store/useStoreLocal'
+import { useStoreLocal } from '@/app/stores/useStoreLocal'
 import { EditProfileDialog } from '../../home/dialog'
 import { getFirstLetter, validateUrl } from '@/app/utils/utils'
-import { useGetProfile } from '@/app/hook/user/usegetProfile'
+import { useGetProfile } from '@/app/hooks/user/usegetProfile'
 import { EditImageDialog } from './EditImageDialog'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useUpdateProfile } from '@/app/hook/user/useUpdateProfile'
+import { useUpdateProfile } from '@/app/hooks/user/useUpdateProfile'
 
 export default function ProfilePage() {
   const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false)

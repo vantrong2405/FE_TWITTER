@@ -10,10 +10,10 @@ import { DialogDescription, DialogTitle } from '@radix-ui/react-dialog'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import { Icons } from '../ui/icon'
-import { useCreateTweet } from '@/app/hook/tweets/useCreateTweet'
-import { useUploadImage } from '@/app/hook/medias/useUploadImage'
+import { useCreateTweet } from '@/app/hooks/tweets/useCreateTweet'
+import { useUploadImage } from '@/app/hooks/medias/useUploadImage'
 import { Tweet } from '@/app/types/tweet.i'
-import { useStoreLocal } from '@/app/store/useStoreLocal'
+import { useStoreLocal } from '@/app/stores/useStoreLocal'
 
 export function TweetDialog({
   isOpen,

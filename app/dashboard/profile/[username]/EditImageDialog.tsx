@@ -10,7 +10,7 @@ import Image from 'next/image'
 import { useDropzone } from 'react-dropzone'
 import { Upload, X, ImageIcon } from 'lucide-react'
 import { Icons } from '@/components/ui/icon'
-import { useUploadImage } from '@/app/hook/medias/useUploadImage'
+import { useUploadImage } from '@/app/hooks/medias/useUploadImage'
 import { validateUrl } from '@/app/utils/utils'
 
 interface EditImageDialogProps {

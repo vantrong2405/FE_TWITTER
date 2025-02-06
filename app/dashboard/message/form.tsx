@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useGetFriends } from '@/app/hook/friends/useGetFriends'
+import { useGetFriends } from '@/app/hooks/friends/useGetFriends'
 import type { User } from '@/app/types/user.i'
 import { MessageBubble } from '@/components/chat/message-bubble'
 import { TypingIndicator } from '@/components/chat/typing-indicator'
