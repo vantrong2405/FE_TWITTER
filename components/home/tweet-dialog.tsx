@@ -10,10 +10,12 @@ import { DialogDescription, DialogTitle } from '@radix-ui/react-dialog'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import { Icons } from '../ui/icon'
-import { useCreateTweet } from '@/app/hook/tweets/useCreateTweet'
-import { useUploadImage } from '@/app/hook/medias/useUploadImage'
+import { useCreateTweet } from '@/app/hooks/tweets/useCreateTweet'
+import { useUploadImage } from '@/app/hooks/medias/useUploadImage'
+import { useUploadVideo } from '@/app/hooks/medias/useUploadVideo'
 import { Tweet } from '@/app/types/tweet.i'
-import { useStoreLocal } from '@/app/store/useStoreLocal'
+import { useStoreLocal } from '@/app/stores/useStoreLocal'
+import { MediaType, CreateTweetBody } from '@/app/types/tweet.i'
 
 export function TweetDialog({
   isOpen,
@@ -40,11 +42,21 @@ export function TweetDialog({
   }, [isOpen])
 
   const { uploadImage, isUploadingImage } = useUploadImage()
+  const { uploadVideo, isUploadingVideo } = useUploadVideo()
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const isVideoFile = (file: File) => {
+    return file.type.startsWith('video/') || file.name.toLowerCase().endsWith('.mp4')
+  }
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const files = Array.from(e.target.files)
-      setSelectedFiles((prev) => [...prev, ...files])
+      const validFiles = files.filter((file) => {
+        const isImage = file.type.startsWith('image/')
+        const isVideo = isVideoFile(file)
+        return isImage || isVideo
+      })
+      setSelectedFiles((prev) => [...prev, ...validFiles])
     }
   }
 
@@ -63,17 +75,23 @@ export function TweetDialog({
         >
           {selectedFiles.map((file, index) => (
             <div key={index} className='relative group'>
-              <Image
-                src={
-                  URL.createObjectURL(file) ||
-                  'https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg'
-                }
-                alt={`Upload ${index + 1}`}
-                width={200}
-                height={200}
-                className='w-full h-32 object-cover rounded-xl shadow-lg cursor-pointer'
-                onClick={() => setSelectedImage(URL.createObjectURL(file))}
-              />
+              {file.type.startsWith('image/') ? (
+                <Image
+                  src={URL.createObjectURL(file)}
+                  alt={`Upload ${index + 1}`}
+                  width={200}
+                  height={200}
+                  className='w-full h-32 object-cover rounded-xl shadow-lg cursor-pointer'
+                  onClick={() => setSelectedImage(URL.createObjectURL(file))}
+                />
+              ) : (
+                <video
+                  src={URL.createObjectURL(file)}
+                  className='w-full h-32 object-cover rounded-xl shadow-lg cursor-pointer'
+                  onClick={() => setSelectedImage(URL.createObjectURL(file))}
+                  controls
+                />
+              )}
               <Button
                 type='button'
                 variant='destructive'
@@ -97,33 +115,37 @@ export function TweetDialog({
     const mentions = tweet.match(/@\w+/g)?.map((mention) => mention.slice(1)) || []
 
     try {
-      let responseUpload: any[] = []
+      let mediaObjects: MediaType[] = []
 
       if (selectedFiles.length > 0) {
-        responseUpload = await Promise.all(
+        const uploadedFiles = await Promise.all(
           selectedFiles.map(async (file) => {
-            const res = await uploadImage(file)
-            return res.data
+            if (isVideoFile(file)) {
+              const res = await uploadVideo(file)
+              return {
+                url: res.data.result[0].url,
+                type: 1 // video type
+              }
+            } else {
+              const res = await uploadImage(file)
+              return {
+                url: res.data.result[0].url,
+                type: 0 // image type
+              }
+            }
           })
         )
+        mediaObjects = uploadedFiles
       }
 
-      const tweetData = {
+      const tweetData: CreateTweetBody = {
         type: 2,
         audience: 0,
         content: tweet,
         parent_id: '67610a05bb0cbd53781c6b76',
         hashtags,
         mentions,
-        medias:
-          responseUpload.length > 0
-            ? responseUpload.map((url) => {
-                return {
-                  url: url.result[0].url,
-                  type: 1
-                }
-              })
-            : []
+        medias: mediaObjects // Gửi array of media objects
       }
 
       const newTweet = await createTweet(tweetData)
@@ -131,12 +153,12 @@ export function TweetDialog({
         ...newTweet.data.result,
         user: profile
       })
+
       setTweet('')
-      responseUpload = []
       setSelectedFiles([])
       onClose()
     } catch (error) {
-      console.error('🚀 ~ handleSubmit ~ error:', error)
+      console.error('Error creating tweet:', error)
     }
   }
 
@@ -197,7 +219,7 @@ export function TweetDialog({
                 ref={fileInputRef}
                 onChange={handleFileChange}
                 className='hidden'
-                accept='image/*'
+                accept='image/*,video/*'
                 multiple
               />
               <TooltipProvider>
@@ -238,7 +260,13 @@ export function TweetDialog({
               </div>
               <Button
                 type='submit'
-                disabled={tweet.trim().length === 0 || tweet.length > 1000 || isCreatingTweet || isUploadingImage}
+                disabled={
+                  tweet.trim().length === 0 ||
+                  tweet.length > 1000 ||
+                  isCreatingTweet ||
+                  isUploadingImage ||
+                  isUploadingVideo
+                }
                 variant='primary'
               >
                 Tweet

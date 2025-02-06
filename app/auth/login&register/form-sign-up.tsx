@@ -7,7 +7,7 @@ import { DatePicker } from '@/components/ui/date-picker'
 import Link from 'next/link'
 import { pathUrl } from '@/app/constant/path'
 import { useRegisterFormSchema } from '@/app/schemas/register.shema'
-import { useRegister } from '@/app/hook/auth/useRegister'
+import { useRegister } from '@/app/hooks/auth/useRegister'
 
 export function FormSignUp() {
   const { register, handleSubmit, setError, setValue, errors } = useRegisterFormSchema()

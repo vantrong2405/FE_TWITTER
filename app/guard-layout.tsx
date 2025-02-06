@@ -11,15 +11,15 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const searchParams = useSearchParams()
 
   useEffect(() => {
-    const access_token = searchParams.get('access_token')
-    const refresh_token = searchParams.get('refresh_token')
+    const access_token = searchParams?.get('access_token')
+    const refresh_token = searchParams?.get('refresh_token')
     if (access_token && refresh_token) {
       setAccessTokenToLS(access_token)
       setRefreshTokenToLS(refresh_token)
       redirect(pathUrl.home)
     }
     const token = getAccessTokenFromLS()
-    if (!token && !pathname.startsWith('/auth/') && pathname !== pathUrl.login_register && pathname !== '/') {
+    if (!token && !pathname?.startsWith('/auth/') && pathname !== pathUrl.login_register && pathname !== '/') {
       redirect(pathUrl.login_register)
     } else if (token && pathname === pathUrl.login_register) {
       redirect(pathUrl.home)

@@ -48,7 +48,8 @@ import {
   Bot,
   PenSquare,
   X,
-  Upload
+  Upload,
+  ArrowLeft
 } from 'lucide-react'
 
 export const Icons = {
@@ -101,5 +102,6 @@ export const Icons = {
   bot: Bot,
   penSquare: PenSquare,
   x: X,
-  upload: Upload
+  upload: Upload,
+  arrowLeft: ArrowLeft
 }

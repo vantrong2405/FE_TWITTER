@@ -17,7 +17,6 @@ export function TweetComposer({
   profile: User | null
 }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  console.log('🚀 ~ TweetComposer ~ profile:', profile)
   const openDialog = () => setIsDialogOpen(true)
   const closeDialog = () => setIsDialogOpen(false)
 

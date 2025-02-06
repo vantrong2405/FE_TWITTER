@@ -1,16 +1,9 @@
 import http from '@/lib/https'
+import { CreateTweetBody } from '../types/tweet.i'
 
 export const tweetApi = {
-  createTweet(body: {
-    type: number
-    audience: number
-    content: string
-    parent_id: string
-    hashtags: string[]
-    mentions: string[]
-    medias: { url: string; type: number }[]
-  }) {
-    return http.post(`/tweet/`, body)
+  createTweet(body: CreateTweetBody) {
+    return http.post('/tweet/', body)
   },
   getTweets(limit: number, page: number) {
     return http.get(`/tweet/`, {

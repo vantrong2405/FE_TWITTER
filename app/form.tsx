@@ -2,8 +2,8 @@
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { pathUrl } from './constant/path'
-import { useStoreLocal } from './store/useStoreLocal'
-import { getOauthGoogleUrl } from './hook/auth/useLoginOathGoogle'
+import { getOauthGoogleUrl } from './hooks/auth/useLoginOathGoogle'
+import { useStoreLocal } from './stores/useStoreLocal'
 
 export default function GetStarted() {
   const oauthURL = getOauthGoogleUrl()
@@ -29,7 +29,7 @@ export default function GetStarted() {
               {profile && profile.email ? (
                 <Link href={pathUrl.home}>
                   <Button variant='outline' className='relative w-full justify-center'>
-                    Get started - <b>{profile.email}</b>
+                    <b>{'Get started' + ' - ' + profile.email}</b>
                   </Button>
                 </Link>
               ) : (

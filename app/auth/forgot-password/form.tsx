@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import Link from 'next/link'
 import { Icons } from '@/components/ui/icon'
-import { useForgotPassword } from '@/app/hook/auth/useForgotPassword'
+import { useForgotPassword } from '@/app/hooks/auth/useForgotPassword'
 import { pathUrl } from '@/app/constant/path'
 import { useForgotPasswordFormSchema } from '@/app/schemas/forgotPassword.schema'
 
