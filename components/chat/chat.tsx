@@ -6,11 +6,10 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { getAccessTokenFromLS } from '@/app/utils/utils'
 import socket from '@/app/utils/socket'
 import { Button } from '@/components/ui/button'
-import { SendHorizontal, Video } from 'lucide-react'
+import { Loader2, SendHorizontal, Video } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { useStoreLocal } from '@/app/store/useStoreLocal'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import configProject from '@/app/config/configService'
 import { User } from '@/app/types/user.i'
@@ -18,130 +17,173 @@ import { Icons } from '../ui/icon'
 import Link from 'next/link'
 import { pathUrl } from '@/app/constant/path'
 
-const LIMIT = 10
-const PAGE = 1
+const LIMIT = 20
 
-type ChatBoxProps = {
-  receiver: User
-  onClose: () => void
+type Message = {
+  _id: string
+  content: string
+  sender_id: string
+  receiver_id: string
+  timestamp: Date
 }
 
-export default function ChatBox({ receiver, onClose }: ChatBoxProps) {
+export default function ChatBox({ receiver, onClose }: { receiver: User; onClose: () => void }) {
   const { profile } = useStoreLocal()
-  const accessToken = getAccessTokenFromLS()
   const [value, setValue] = useState('')
-  const [conversations, setConversations] = useState<
-    { _id: string; content: string; sender_id: string; receiver_id: string; timestamp: Date }[]
-  >([])
-  const [pagination, setPagination] = useState({ page: PAGE, total_page: 0 })
-  const scrollAreaRef = useRef<HTMLDivElement>(null)
+  const [messages, setMessages] = useState<Message[]>([])
+  const [page, setPage] = useState(1)
+  const [hasMore, setHasMore] = useState(true)
+  const [loading, setLoading] = useState(false)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  const relevantMessages = conversations.filter(
-    (message) =>
-      (message.sender_id === profile?._id && message.receiver_id === receiver._id) ||
-      (message.sender_id === receiver._id && message.receiver_id === profile?._id)
-  )
+  const fetchMessages = async (pageNum: number) => {
+    if (loading || !receiver?._id) return
 
-  const handleSubmit = (e: FormEvent) => {
+    setLoading(true)
+    try {
+      const response = await axios.get(`/conversations/receiver/${receiver._id}`, {
+        baseURL: configProject.NEXT_PUBLIC_VITE_API_URL,
+        headers: {
+          Authorization: `Bearer ${getAccessTokenFromLS()}`
+        },
+        params: { limit: LIMIT, page: pageNum }
+      })
+
+      const { data: newMessages, total } = response.data
+      setMessages((prev) => {
+        const uniqueMessages = newMessages.filter(
+          (newMsg: Message) => !prev.some((existingMsg) => existingMsg._id === newMsg._id)
+        )
+        const sortedMessages = [...prev, ...uniqueMessages].sort(
+          (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+        )
+
+        if (pageNum === 1) {
+          scrollToBottom()
+          setTimeout(scrollToBottom, 300)
+          setTimeout(scrollToBottom, 500)
+        }
+
+        return sortedMessages
+      })
+      setHasMore(newMessages.length === LIMIT)
+      setLoading(false)
+    } catch (error) {
+      console.error('Error fetching messages:', error)
+      setLoading(false)
+    }
+  }
+
+  const loadMore = () => {
+    if (!loading && hasMore) {
+      const nextPage = page + 1
+      setPage(nextPage)
+      fetchMessages(nextPage)
+    }
+  }
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    if (!value.trim()) return
+    if (!value.trim() || !profile?._id) return
 
-    const conversation = {
+    const newMessage = {
       content: value,
-      sender_id: profile?._id ?? '',
-      receiver_id: receiver?._id ?? '',
+      sender_id: profile._id,
+      receiver_id: receiver._id,
       timestamp: new Date()
     }
 
-    socket.emit('send_message', { payload: conversation })
+    socket.emit('send_message', { payload: newMessage })
 
-    setConversations((prev) => [
+    setMessages((prev) => [
+      ...prev,
       {
-        ...conversation,
-        _id: new Date().getTime().toString()
-      },
-      ...prev
+        ...newMessage,
+        _id: Date.now().toString()
+      } as Message
     ])
 
     setValue('')
+    setTimeout(scrollToBottom, 100)
+  }
+
+  const scrollToBottom = () => {
+    const scrollDiv = document.getElementById('scrollableDiv')
+    if (scrollDiv) {
+      setTimeout(() => {
+        requestAnimationFrame(() => {
+          scrollDiv.scrollTop = scrollDiv.scrollHeight + 1000
+        })
+      }, 200)
+    }
   }
 
   useEffect(() => {
-    if (!accessToken) {
-      console.error('Access token is missing')
-      return
-    }
+    // Reset state when receiver changes
+    setMessages([])
+    setPage(1)
+    setHasMore(true)
+
+    // Fetch initial messages
+    fetchMessages(1)
+  }, [receiver._id])
+
+  useEffect(() => {
+    const accessToken = getAccessTokenFromLS()
+    if (!accessToken) return
 
     socket.auth = {
       Authorization: `Bearer ${accessToken}`
     }
-
     socket.connect()
 
     socket.on('receive_message', (data) => {
       const { payload } = data
-
       if (
-        (payload.sender_id === profile?._id && payload.receiver_id === receiver?._id) ||
+        (payload.sender_id === profile?._id && payload.receiver_id === receiver._id) ||
         (payload.sender_id === receiver._id && payload.receiver_id === profile?._id)
       ) {
-        setConversations((prev) => [payload, ...prev])
+        setMessages((prev) => [...prev, payload])
+        setTimeout(scrollToBottom, 100)
       }
     })
 
-    socket.on('connect_error', (err) => {
-      console.error(err || 'Socket connection error')
-    })
-
     return () => {
+      socket.off('receive_message')
       socket.disconnect()
     }
-  }, [accessToken, receiver])
+  }, [profile?._id, receiver._id])
 
-  useEffect(() => {
-    if (receiver?._id) {
-      axios
-        .get(`/conversations/receiver/${receiver._id}`, {
-          baseURL: configProject.NEXT_PUBLIC_VITE_API_URL,
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('access_token')}`
-          },
-          params: { limit: LIMIT, page: PAGE }
-        })
-        .then((response) => {
-          const { data: conversations, page, total } = response.data
-          setConversations(conversations)
-          setPagination({ page, total_page: total })
-        })
-        .catch((error) => {
-          console.error('Error fetching conversations:', error)
-        })
+  const CustomLoader = () => {
+    if (messages.length === 0 || messages.length < LIMIT) {
+      return null // Không hiện loading nếu không có tin nhắn hoặc ít hơn LIMIT
     }
-  }, [receiver])
-
-  useEffect(() => {
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
-    }
-  }, [conversations])
+    return (
+      <div className='flex flex-col items-center justify-center py-8'>
+        <Loader2 className='h-8 w-8 animate-spin text-blue-500' />
+        <p className='mt-2 text-sm text-gray-500'>Đang tải thêm tin nhắn...</p>
+      </div>
+    )
+  }
 
   return (
-    <div className='flex flex-col w-[350px] h-[500px]  rounded-lg shadow-xl overflow-hidden z-50 border bg-white dark:bg-black'>
+    <div className='flex flex-col w-[350px] h-[500px] rounded-lg shadow-xl overflow-hidden z-50 border bg-white dark:bg-black'>
       {/* Header */}
-      <div className='flex items-center justify-between p-4  border-b'>
+      <div className='flex items-center justify-between p-4 border-b'>
         <div className='flex items-center space-x-3'>
-          <Link href={pathUrl.profile + receiver?.username} passHref>
+          <Link href={pathUrl.profile + receiver?.username}>
             <Avatar className='h-10 w-10'>
               <AvatarImage src={receiver.avatar} alt={receiver.name || 'User'} />
               <AvatarFallback>{receiver.name?.charAt(0).toUpperCase() || '?'}</AvatarFallback>
             </Avatar>
           </Link>
           <div>
-            <h3 className='font-semibold '>{receiver.name || 'Unknown User'}</h3>
-            <p className='text-xs '>@{receiver.username || ''}</p>
+            <h3 className='font-semibold'>{receiver.name || 'Unknown User'}</h3>
+            <p className='text-xs'>@{receiver.username || ''}</p>
           </div>
         </div>
         <div className='flex items-center space-x-2'>
+          {/* Controls */}
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -162,41 +204,55 @@ export default function ChatBox({ receiver, onClose }: ChatBoxProps) {
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>More options</p>
+                <p>Close chat</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
         </div>
       </div>
 
-      {/* Chat content */}
-      <ScrollArea className='flex-1 p-4' ref={scrollAreaRef}>
-        <div className='space-y-4'>
-          {relevantMessages.map((message, index) => (
-            <div key={index} className={`flex ${message.sender_id === profile?._id ? 'justify-end' : 'justify-start'}`}>
+      {/* Messages */}
+      <div id='scrollableDiv' className='flex-1 overflow-auto p-4' style={{ display: 'flex', flexDirection: 'column' }}>
+        <InfiniteScroll
+          dataLength={messages.length}
+          next={loadMore}
+          hasMore={hasMore}
+          loader={<CustomLoader />}
+          scrollableTarget='scrollableDiv'
+          style={{ display: 'flex', flexDirection: 'column' }}
+        >
+          <div className='space-y-4 flex-grow'>
+            {messages.map((message) => (
               <div
-                className={`rounded-lg px-4 py-2 max-w-[80%] ${
-                  message.sender_id === profile?._id ? 'bg-blue-500' : 'bg-background'
-                }`}
+                key={message._id}
+                className={`flex ${message.sender_id === profile?._id ? 'justify-end' : 'justify-start'}`}
               >
-                <p className='text-sm'>{message.content}</p>
+                <div
+                  className={`rounded-lg px-4 py-2 max-w-[80%] ${
+                    message.sender_id === profile?._id ? 'bg-blue-500 text-white' : 'bg-gray-100 dark:bg-gray-800'
+                  }`}
+                >
+                  <p className='text-sm'>{message.content}</p>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </ScrollArea>
+            ))}
+          </div>
+        </InfiniteScroll>
+      </div>
 
-      {/* Input Box */}
-      <form onSubmit={handleSubmit} className='flex items-center p-4  border-t'>
-        <Input
-          className='flex-1 '
-          placeholder='Type your message...'
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-        />
-        <Button className='ml-2' type='submit' variant={'outline'}>
-          <SendHorizontal className='h-5 w-5' />
-        </Button>
+      {/* Input */}
+      <form onSubmit={handleSubmit} className='p-4 border-t'>
+        <div className='flex items-center gap-2'>
+          <Input
+            className='flex-1'
+            placeholder='Type your message...'
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+          />
+          <Button type='submit' variant='outline'>
+            <SendHorizontal className='h-5 w-5' />
+          </Button>
+        </div>
       </form>
     </div>
   )

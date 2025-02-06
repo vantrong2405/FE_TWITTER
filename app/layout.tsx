@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import AuthGuard from './guard-layout'
 import { Suspense } from 'react'
 import { ThemeProvider } from '@/components/theme-provider'
+import NProgressHandler from '@/components/common/nro-progress'
 ;<meta name='format-detection' content='telephone=no, date=no, email=no, address=no' />
 
 const geistSans = Geist({
@@ -43,6 +44,7 @@ export default function RootLayout({
           </Suspense>
         </QueryProvider>
         <ToastContainer />
+        <NProgressHandler />
       </body>
     </html>
   )
