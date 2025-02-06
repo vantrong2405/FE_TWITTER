@@ -209,7 +209,6 @@ export default function EnhancedChat() {
         isOpen={isAddMemberDialogOpen}
         onClose={() => setIsAddMemberDialogOpen(false)}
         onAddMembers={(member) => {
-          console.log('Member added:', member)
           setIsAddMemberDialogOpen(false)
         }}
       />

@@ -3,22 +3,8 @@ import axios from 'axios'
 import { getAccessTokenFromLS } from '@/app/utils/utils'
 import configProject from '@/app/config/configService'
 import { User } from '@/app/types/user.i'
-
-const LIMIT = 20
-
-export type MessageType = 'text' | 'image' | 'video' | 'file'
-
-export type Message = {
-  _id: string
-  content: string
-  sender_id: string
-  receiver_id: string
-  timestamp: Date
-  type?: MessageType
-  file_url?: string
-  file_name?: string
-  file_size?: number
-}
+import { pagination } from '@/app/constant/query-config'
+import { Message } from '@/app/types/message.i'
 
 export const useMessages = (receiver: User, scrollToBottom: () => void) => {
   const [messages, setMessages] = useState<Message[]>([])
@@ -36,7 +22,7 @@ export const useMessages = (receiver: User, scrollToBottom: () => void) => {
         headers: {
           Authorization: `Bearer ${getAccessTokenFromLS()}`
         },
-        params: { limit: LIMIT, page: pageNum }
+        params: { limit: pagination.LIMIT, page: pageNum }
       })
 
       const { data: newMessages, total } = response.data
@@ -56,7 +42,7 @@ export const useMessages = (receiver: User, scrollToBottom: () => void) => {
 
         return sortedMessages
       })
-      setHasMore(newMessages.length === LIMIT)
+      setHasMore(newMessages.length === pagination.LIMIT)
       setLoading(false)
     } catch (error) {
       console.error('Error fetching messages:', error)

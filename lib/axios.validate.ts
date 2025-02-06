@@ -1,6 +1,6 @@
 import { AxiosError, isAxiosError } from 'axios'
 import { HttpStatusCode } from '../app/constant/httpStatusCode.enum'
-import { SuccessResponse } from '@/app/types/utils.type'
+import { SuccessResponse } from '@/app/types/utils.i'
 
 export function isAxiosUnauthorizedError<UnauthorizedError>(error: unknown): error is AxiosError<UnauthorizedError> {
   return isAxiosError(error) && error.response?.status === HttpStatusCode.Unauthorized

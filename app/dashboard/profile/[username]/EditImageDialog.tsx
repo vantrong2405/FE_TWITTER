@@ -67,7 +67,6 @@ export function EditImageDialog({
       let finalImageUrl = imageUrl
       if (activeTab === 'upload' && selectedFile) {
         const response = await uploadImage(selectedFile)
-        console.log('🚀 ~ handleSave ~ response:', response)
         const uploadedImageUrl = response.data.result[0].url
         if (!uploadedImageUrl) {
           throw new Error('Upload failed')

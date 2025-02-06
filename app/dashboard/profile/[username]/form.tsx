@@ -38,8 +38,6 @@ export default function ProfilePage() {
         console.warn('No valid image selected.')
         return
       }
-
-      console.log('Updating avatar with:', isTab, imageUrl)
     } catch (error) {
       console.error('Failed to update avatar:', error)
     }
@@ -56,8 +54,6 @@ export default function ProfilePage() {
         console.warn('No valid cover photo selected.')
         return
       }
-
-      console.log('Updating cover photo with:', isTab, imageUrl)
     } catch (error) {
       console.error('Failed to update cover photo:', error)
     }

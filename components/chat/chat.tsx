@@ -1,40 +1,19 @@
 'use client'
 
 import { type FormEvent, useEffect, useState, useRef } from 'react'
-import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getAccessTokenFromLS } from '@/app/utils/utils'
 import socket from '@/app/utils/socket'
 import { Button } from '@/components/ui/button'
 import { Loader2, SendHorizontal, Video, Image as ImageIcon, FileIcon, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import configProject from '@/app/config/configService'
 import { User } from '@/app/types/user.i'
-import { Icons } from '../ui/icon'
-import Link from 'next/link'
-import { pathUrl } from '@/app/constant/path'
 import { ChatHeader } from './ChatHeader'
 import { useStoreLocal } from '@/app/stores/useStoreLocal'
-import { useMessages } from '@/app/hooks/chat/useMessages'
 import { useFileHandling } from '@/app/hooks/chat/useFileHandling'
-
-const LIMIT = 20
-
-type MessageType = 'text' | 'image' | 'video' | 'file'
-
-type Message = {
-  _id: string
-  content: string
-  sender_id: string
-  receiver_id: string
-  timestamp: Date
-  type?: MessageType
-  file_url?: string
-  file_name?: string
-  file_size?: number
-}
+import { pagination } from '@/app/constant/query-config'
+import { useMessages } from '@/app/hooks/chat/useMessages'
+import { Message, MessageType } from '@/app/types/message.i'
 
 export default function ChatBox({ receiver, onClose }: { receiver: User; onClose: () => void }) {
   const { profile } = useStoreLocal()
@@ -125,10 +104,7 @@ export default function ChatBox({ receiver, onClose }: { receiver: User; onClose
   }
 
   useEffect(() => {
-    // Reset state when receiver changes
     setMessages([])
-
-    // Fetch initial messages
     fetchMessages(1)
   }, [receiver._id])
 
@@ -160,17 +136,14 @@ export default function ChatBox({ receiver, onClose }: { receiver: User; onClose
 
   useEffect(() => {
     if (scrollDivRef.current) {
-      // Disconnect observer cũ nếu có
       if (observerRef.current) {
         observerRef.current.disconnect()
       }
 
-      // Tạo observer mới
       observerRef.current = new MutationObserver((mutations) => {
         scrollToBottom()
       })
 
-      // Bắt đầu theo dõi thay đổi trong scrollDiv
       observerRef.current.observe(scrollDivRef.current, {
         childList: true,
         subtree: true
@@ -185,8 +158,8 @@ export default function ChatBox({ receiver, onClose }: { receiver: User; onClose
   }, [])
 
   const CustomLoader = () => {
-    if (messages.length === 0 || messages.length < LIMIT) {
-      return null // Không hiện loading nếu không có tin nhắn hoặc ít hơn LIMIT
+    if (messages.length === 0 || messages.length < pagination.LIMIT) {
+      return null
     }
     return (
       <div className='flex flex-col items-center justify-center py-8'>
@@ -196,7 +169,6 @@ export default function ChatBox({ receiver, onClose }: { receiver: User; onClose
     )
   }
 
-  // Render file preview
   const renderFilePreview = () => {
     if (!filePreview) return null
 

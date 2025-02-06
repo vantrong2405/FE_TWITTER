@@ -34,7 +34,6 @@ export default function FormDashBoard() {
   // useQuery
   const { data: suggestFriends } = useGetSuggestFriends(pagination.LIMIT, pagination.PAGE)
   const { data: friends } = useGetFriends()
-  console.log('🚀 ~ FormDashBoard ~ friends:', friends)
   // hook
   const { data: profile } = useGetMe()
   const { mutateFollowFriend, isPendingFollowFriend } = useFollowFriend()
